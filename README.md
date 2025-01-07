@@ -151,5 +151,8 @@ This work is licensed under a
  [**Lecture 12: Big Data Tools (Time Permitting)**]()
  ([.pdf]())
 
+<br>
+
+***
  
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
