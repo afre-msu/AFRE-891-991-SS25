@@ -27,7 +27,7 @@ This work is licensed under a
 
 
  [**Lecture 1: R Intro**](l)
- ([.pdf]())
+ ([html]()), [pdf]())
 
  * Course Introduction
  * R and RStudio
