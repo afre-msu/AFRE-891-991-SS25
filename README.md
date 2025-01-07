@@ -18,6 +18,7 @@ This work is licensed under a
 ## Syllabus
 
 [**AFRE 891 SS25 Syllabus**]()
+
 [**AFRE 991 SS25 Syllabus**]()
 
 ***
