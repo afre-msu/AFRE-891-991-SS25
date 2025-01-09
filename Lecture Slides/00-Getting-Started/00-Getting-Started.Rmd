@@ -1,0 +1,170 @@
+---
+title: "Lecture 0: Getting Started"
+author: "James Sears <br> AFRE 891 SS 24 <br> Michigan State University"
+date: "Spring 2025"
+
+      
+output:
+  xaringan::moon_reader:
+    css: [msu-default.css, msu-metropolis.css, metropolis-fonts]
+    lib_dir: libs
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      fig_caption: true
+
+
+---
+
+```{css, echo=FALSE}
+# CSS for including pauses in printed PDF output (see bottom of lecture)
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.remark-code-line {
+  font-size: 95%;
+}
+.small {
+  font-size: 75%;
+}
+.scroll-output-full {
+  height: 90%;
+  overflow-y: scroll;
+}
+.scroll-output-75 {
+  height: 75%;
+  overflow-y: scroll;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(fontawesome)
+knitr::opts_chunk$set(
+	fig.align = "center",
+	cache = FALSE,
+	dpi = 300,
+  warning = F,
+  message = F,
+	fig.height = 5,
+	out.width = "80%"
+)
+```
+# Table of Contents
+
+1. [Installing Course Software](#install)
+
+class: inverse, middle
+name: install
+
+# Installing Course Software
+
+---
+# Course Software
+
+Throughout this course we will require a few pieces of (free!) software:
+
+  * .hi-blue[R]
+  * .hi-medgrn[RStudio]
+  * **Windows:** .hi-red[RTools]
+  * **Mac:** .hi-pink[macrtools]
+  
+You'll also need to create a .hi-purple[Github Education account]
+
+---
+# R vs. RStudio
+
+- .hi-medgrn[R] is the .hi-dkgrn[programming language]
+
+- .hi-blue[RStudio] is the .hi-purple[environment] in which we use .hi-medgrn[R] 
+
+
+---
+# Installing R
+
+To install .hi-medgrn[R], go to the [.hi-orange[R Project website]](https://ftp.osuosl.org/pub/cran/).
+
+- **Windows:** "R For Windows > Base > Download R # for Windows" 
+ 
+- **Mac:** "R for (Mac) OS X > R-#.pkg"
+
+- Where "#" is the current version number
+
+
+
+<img src="images/r_project.png" width = "120%"/> 
+
+
+---
+
+# Installing RStudio
+
+To install .hi-blue[RStudio], go to the [.hi-orange[RStudio Download Page]](https://posit.co/download/rstudio-desktop/#download)
+.pull-left-sm[
+- Scroll down, follow the link to install RStudio for your operating system. 
+- Correct file should be linked under **2. Install RStudio**
+- Can scroll further down to the entire list and download the version for Windows or Mac. 
+ ]
+ .pull-right-lg[
+<img src="images/RSTUDIO_SITE.png" width = "120%"/> 
+]
+
+---
+# Windows: Rtools
+
+.hi-red[Rtools] is a toolchain bundle that will allow building R packages from source, which we'll need for installing packages that aren't listed on CRAN (i.e. only available direct from GitHub)
+
+  * _Note:_ .hi-red[Rtools] is only for .hi-red[Windows]!
+  
+  
+To install the current version of .hi-red[Rtools], navigate to the [Rtools website](https://cran.r-project.org/bin/windows/Rtools/rtools44/rtools.html), download the installer, and follow the prompts.
+
+
+---
+# Mac: macrtools
+
+For Mac users, the .hi-pink[macrtools] replaces .hi-red[Rtools].
+
+.hi-pink[macrtools] is a package that [installs the R toolchain for mac](https://github.com/coatless-mac/macrtools?tab=readme-ov-file)
+
+
+
+To install, run
+
+```{r macrtools, eval = F, include = T}
+# install remotes if your don't already have it
+if (!require("remotes")) install.packages("remotes")
+
+remotes::install_github("coatless-mac/macrtools")
+```
+
+To install the R toolchain, run
+
+
+```{r toolchain, eval = F, include = T}
+macrtools::macos_rtools_install()
+```
+
+---
+# GitHub Education
+
+We'll be using GitHub throughout our course for version control, content delivery, and [Github Classroom](https://classroom.github.com) for assignment submission.
+
+To start, create an account on [GitHub](https://github.com/) and register for a [student/educator  discount](https://education.github.com/discount_requests/new)
+
+  * In Week 2 we'll walk through how to sync the course repository using [Github Desktop](https://desktop.github.com/download/). Feel free to install it now too if you'd like, or wait to decide if it's right for you in Week 2.
+  
+  
+
+
+```{r gen_pdf, include = FALSE, cache = FALSE, eval = FALSE}
+pagedown::chrome_print(input = "00-Getting-Started.html", timeout = 100)
+```
+
+# 
