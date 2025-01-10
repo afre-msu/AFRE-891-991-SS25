@@ -56,16 +56,7 @@ knitr::opts_chunk$set(
 	out.width = "80%"
 )
 ```
-# Table of Contents
 
-1. [Installing Course Software](#install)
-
-class: inverse, middle
-name: install
-
-# Installing Course Software
-
----
 # Course Software
 
 Throughout this course we will require a few pieces of (free!) software:

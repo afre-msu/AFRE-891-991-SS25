@@ -97,7 +97,7 @@ This work is licensed under a
  * Vectorization
  * Parallelization
 
-   
+
  [**Lecture 8: Fast Econometric Analysis in R**]()
  ([.pdf]())
 
@@ -118,7 +118,7 @@ This work is licensed under a
  * Canonical Synthetic Control method (SCM)
  * Synthetic Difference-in-Differences
  * Partially Pooled SCM
-   
+
 
  [**Lecture 10: Spatial Data**]()
  ([.pdf]())
@@ -154,5 +154,5 @@ This work is licensed under a
 <br>
 
 ***
- 
+
 [![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
