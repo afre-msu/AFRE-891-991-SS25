@@ -1,0 +1,114 @@
+---
+title: "Assignment 1: R and GitHub Basics, Data Wrangling"
+subtitle: AFRE 891 SS 25
+date: Due Friday, January 31 end of day via GitHub Classroom
+output: html_document
+---
+
+***
+
+Collaborators:
+
+***
+
+### Instructions
+  
+
+
+1. For our assignments, we will use **GitHub Classroom** to create a private code repository to track code changes and submit your assignment. 
+
+Your repo, for example, will be named `AFRE-891-SS25/Assignment1-yourusername` (where `yourusername` is your GitHub username). I highly recommend committing/pushing regularly so your work is always backed up. 
+
+Once you've joined the assignment, you may clone the repository to your computer and use the included files to complete the assignment.
+
+2. Complete your assignment using the **R Markdown** (.Rmd) template file. The output document should show your **code**, the relevant **R output**, and the **answer** to each question in the assignment. Add code chunks and discussion where needed/desired. Clearly label things with the number/letter of each question so I know what I'm grading. Interpret your output (explain what it's showing) anytime it's not immediately 100% obvious. 
+
+Make sure that the "submitted" version of the assignment repo (i.e. final push before the deadline) includes
+    1. The completed **R Markdown** script (`.Rmd` extension)
+    1. The "knit" (fully rendered) **HTML** document (`.html` extension)
+    1. Any other files or folders created during the knitting process. For example, if your script produces a graph, it will create an image and save it inside of a subfolder.
+
+3. Your script should contain **comments** that meaningfully describe what it does. Comments clearly communicate to others what's happening and why, every step of the way (and communicate to me that you understand why you're performing each step). Your audience very much includes future you, who will remember surprisingly little of the code you write today (if you're anything like me). You should have at least one comment every 5-10 lines or more. Write comments in present tense above the corresponding line and omit unnecessary words.
+
+4. Write the names of any **other students you worked with** at the top of your assignment next to the "collaborators" text. As a reminder, you can work together and discuss strategies for solving problems, but I don't want to see identical code.
+
+**Grading:** I'll be looking at completeness, correctness, and style. By style I mean: Does the submission follow the instructions? Does it include informative comments? Is the code itself readable/reproducible?
+  
+</br>
+
+***
+
+### Part I: Practice with R Basics 
+
+1. **Vector indexing.** Define a vector named `temp_f` comprised of the following Fahrenheit temperature measurements: 35, 88, 42, 84, 81, 50.
+
+   a. Calculate a vector `temp_diff` that gives the difference between each of these values and the lowest value in the set.
+
+   b. What is the mean of the last 3 entries in this new vector? Calculate it using `mean()` and specify the arguments using indexing in at least 2 ways: 
+    a. with `c()`, and 
+    b. with `:`.
+
+
+2. **Matrices.** Try the following exercises:
+
+   a. Define the following matrix. See if you can do it with sequences (`seq`) and repetition (`rep`) rather than having to type in each number manually.
+```{r, eval=F}
+     [,1] [,2] [,3] [,4]
+[1,]    0    1    2   3
+[2,]    0    2    4   6
+[3,]    0    3    6   9
+[4,]    0    4    8  12
+[5,]    0    5   10  15
+```
+<center>
+  *Hint: you can construct it quickly by multiplying the same integer vector by different values for each column.* 
+  
+  </center>
+  </br>
+   b. Take the second and fourth columns of this matrix and transpose them to get a 2-by-5 matrix. (What is the function to transpose a matrix in R? Google it!)
+
+   c. Write a line or two of code that counts the number of elements of this new matrix that are equal to 3. (*Hint: One way to do this is to first define a logical matrix that indicates whether the value of each element of the original matrix is equal to 3, and then sum the values of this logical matrix.*)
+
+3. **Combining Matrices and Vectors**
+  
+  a. Define a new matrix with the following values
+  
+```{r, eval=F}
+     [,1] [,2] 
+[1,]    5    5    
+[2,]    4    4   
+[3,]    3    3  
+[4,]    2    2   
+[5,]    1    1   
+```
+
+  b. Bind Columns 1, 2, and 4 from the matrix generated in 2a onto the front/left of this new matrix
+  
+  c. Add a sixth row to the combined matrix with the values 0,0,0,6,12,18
+  
+***
+  
+
+### Part II: Interacting with Data
+
+For this section, use data from the `nycflights13` package. To start, we'll just load in the `flights` dataset.
+
+  </br>
+  
+  a. Install the `pacman` package using `library()`.
+  
+  b. Use the `pacman::p_load()` command to install/load the `nycflights` package. Recall that the `package::` portion of the command allows us to use the named function without loading the whole package that it's located in.
+  
+  c. Load the `flights` dataset.
+  
+  d. What class of object is `flights`? What are its dimensions? Discuss/use two ways of determining its dimensions.
+  
+  e. Print both the head of the dataset and the tail of the dataset to the console (first 10 rows of each, using `head()` and `tail()`). Then, examine the full dataset in your environment and give a brief description of the dataset's contents and its structure.
+  
+  f. Run `summary()` on the `flights` dataset. How does summary behave differently for numeric versus character variables? Are there any other data types in the dataset?
+
+***
+
+<center>
+When done, make sure to push your updated assignment repo containing the **completed .Rmd file**, the knit **HTML document**, and any other files or folders created during the knitting process.
+</center>
