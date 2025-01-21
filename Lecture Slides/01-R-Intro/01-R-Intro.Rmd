@@ -91,7 +91,7 @@ One distinction: .hi-orange.under[Links]
 ---
 # Using the Slides
 
-I highly recommend that you [.hi-orange[replicate code in the slides as I go]](https://github.com/afre-msu/AFRE-891-991-SS25/tree/033f59f18cee67d3363cc98229dfb86a649eb838/Lecture%20Slides/01-R-Intro).super[.pink[†]].
+I highly recommend that you [replicate code in the slides as I go](https://github.com/afre-msu/AFRE-891-991-SS25/tree/033f59f18cee67d3363cc98229dfb86a649eb838/Lecture%20Slides/01-R-Intro).super[.pink[†]].
   * Try to type the code yourself first, use the code written in slides if you fall behind
   * Good habit to create a .hi-blue[reference script] with all the new methods/functions as you go
 
@@ -482,7 +482,7 @@ name: rstudio
 ---
 # Installing R
 
-To install .hi-medgrn[R], go to the [.hi-orange[R Project website]](https://ftp.osuosl.org/pub/cran/).
+To install .hi-medgrn[R], go to the [R Project website](https://ftp.osuosl.org/pub/cran/).
 
 - **Windows:** "R For Windows > Base > Download R # for Windows" 
  
@@ -518,7 +518,7 @@ To install .hi-medgrn[R], go to the [.hi-orange[R Project website]](https://ftp.
 
 # Installing RStudio
 
-To install .hi-blue[RStudio], go to the [.hi-orange[RStudio Download Page]](https://posit.co/download/rstudio-desktop/#download)
+To install .hi-blue[RStudio], go to the [RStudio Download Page](https://posit.co/download/rstudio-desktop/#download)
 .pull-left-sm[
 - Scroll down, follow the link to install RStudio for your operating system. 
 - Correct file should be linked under **2. Install RStudio**
@@ -531,10 +531,10 @@ To install .hi-blue[RStudio], go to the [.hi-orange[RStudio Download Page]](http
 ---
 # Other Things
 
-* Create an account on [.hi-orange[GitHub]](https://github.com/) and register for a [.hi-orange[student/educator  discount]](https://education.github.com/discount_requests/new)
-    * You will soon receive an invitation to the course repo on GitHub, as well as [.hi-orange[GitHub classroom]](https://classroom.github.com), which is how we'll disseminate and submit assignments, receive feedback and grading, etc. 
-- **Windows:** Install [.hi-orange[Rtools]](https://cran.r-project.org/bin/windows/Rtools/)
-- **Mac:** Configure/open your C++ toolchain (see [.hi-orange[here]](https://github.com/rmacoslib/r-macos-rtools#installer-package-for-macos-r-toolchain-)
+* Create an account on [GitHub](https://github.com/) and register for a [student/educator  discount](https://education.github.com/discount_requests/new)
+    * You will soon receive an invitation to the course repo on GitHub, as well as [GitHub classroom](https://classroom.github.com), which is how we'll disseminate and submit assignments, receive feedback and grading, etc. 
+- **Windows:** Install [Rtools](https://cran.r-project.org/bin/windows/Rtools/)
+- **Mac:** Configure/open your C++ toolchain (see [here](https://github.com/rmacoslib/r-macos-rtools#installer-package-for-macos-r-toolchain-)
 
 ---
 # RStudio
@@ -777,7 +777,7 @@ Here price "gets" the value `149.99`.
 # Choice of Assignment Operator
 Why use `<-` instead of `=`? 
 
-Well, it turns out that it's a [.hi-orange[lot more complicated of a question than it appears (warning: pedantic rabbit hole )]](https://stackoverflow.com/questions/1741820/what-are-the-differences-between-and-assignment-operators)
+Well, it turns out that it's a [lot more complicated of a question than it appears (warning: pedantic rabbit hole )](https://stackoverflow.com/questions/1741820/what-are-the-differences-between-and-assignment-operators)
 
 --
 
@@ -787,7 +787,7 @@ Well, it turns out that it's a [.hi-orange[lot more complicated of a question th
   
 --
 
-**Another reason:** Google asks their developers to assign objects with `<-` in the [.hi-orange[Google RGuide]](https://google.github.io/styleguide/Rguide.html), so if it's good enough for Google it's good enough for me.
+**Another reason:** Google asks their developers to assign objects with `<-` in the [Google RGuide](https://google.github.io/styleguide/Rguide.html), so if it's good enough for Google it's good enough for me.
   
 
 ---
@@ -1377,7 +1377,7 @@ To install a package, we can  use `install.packages()`
 install.packages("tidyverse")
 ```
 
-.hi-medgrn[R] will search for a package named "tidyverse" on [.hi-orange[CRAN]](https://cran.r-project.org/web/packages/available_packages_by_name.html) and install it if found
+.hi-medgrn[R] will search for a package named "tidyverse" on [CRAN](https://cran.r-project.org/web/packages/available_packages_by_name.html) and install it if found
 
 --
 
