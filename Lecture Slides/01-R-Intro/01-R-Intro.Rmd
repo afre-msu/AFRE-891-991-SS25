@@ -1,6 +1,6 @@
 ---
 title: "Lecture 1: Introduction to R"
-author: "James Sears* <br> AFRE 891 SS 24 <br> Michigan State University"
+author: "James Sears* <br> AFRE 891/991 SS 25 <br> Michigan State University"
 date: ".small[<br> *Parts of these slides are adapted from [“Advanced Data Analytics”](https://github.com/msu-econ-data-analytics/course-materials) by Nick Hagerty and [“Introduction to Data Science”](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html) by Rafael A. Irizarry, used under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0).]"
 
       
