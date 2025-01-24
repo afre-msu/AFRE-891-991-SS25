@@ -17,17 +17,29 @@ This work is licensed under a
 ***
 ## Syllabus
 
-[**AFRE 891 SS25 Syllabus**]()
+[**AFRE 891 SS25 Syllabus**](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Course%20Logistics/AFRE%20891/Syllabus%20-%20AFRE%20891%20SS25.pdf)
 
-[**AFRE 991 SS25 Syllabus**]()
+[**AFRE 991 SS25 Syllabus**](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Course%20Logistics/AFRE%20991/Syllabus%20-%20AFRE%20991%20SS25.pdf)
+
+**Detailed Course Calendars:** [AFRE 891](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Course%20Logistics/AFRE%20891/Detailed%20Course%20Calendar%20-%20AFRE%20891%20SS25.pdf), [AFRE 991](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Course%20Logistics/AFRE%20991/Detailed%20Course%20Calendar%20-%20AFRE%20991%20SS25.pdf)
+
 
 ***
 
  ## Lecture Slides
 
+ [**Lecture 0: Getting Started**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/00-Getting-Started)
+ ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/00-Getting-Started/00-Getting-Started.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/00-Getting-Started/00-Getting-Started.pdf))
 
- [**Lecture 1: R Intro**](l)
- ([html]()) ([pdf]())
+ * Installing R
+ * Installing RStudio
+ * Installing R Toolchain
+ * Signing up for Github/Github Education, Installing Github Desktop
+
+
+
+ [**Lecture 1: R Intro**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/01-R-Intro)
+ ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/01-R-Intro/01-R-Intro.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/01-R-Intro/01-R-Intro.pdf))
 
  * Course Introduction
  * R and RStudio
@@ -37,9 +49,9 @@ This work is licensed under a
  * Interacting with and Manipulating Data Frames
 
 
- [**Lecture 2: Productivity**]()
- ([.pdf]())
-
+ [**Lecture 2: Productivity**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/02-Productivity)
+ ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/02-Productivity/02-Productivity.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/91f13e8e8218265ea48e16b1f8f7a3437fb5979b/Lecture%20Slides/02-Productivity/02-Productivity.pdf))
+ 
  * R Markdown
  * Version Control
  * Git(Hub) + RStudio
@@ -47,16 +59,16 @@ This work is licensed under a
  * Other Tips and Productivity Tools
 
  [**Lecture 3: Wrangling**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Tidyverse Overview
  * Pipes
  * Data Wrangling with dplyr
  * Data Tidying with tidyr
 
  [**Lecture 4: Cleaning**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Paths and Importing Data
  * Keys and Relational Data
  * String Cleaning
@@ -64,8 +76,8 @@ This work is licensed under a
  * Data Cleaning Checklist
 
  [**Lecture 5: Visualization**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Principles of Data Visualization
  * Getting started with ggplot2
  * Common Charts
@@ -75,8 +87,8 @@ This work is licensed under a
  * Extending ggplot2
 
  [**Lecture 6: Data Acquisition**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Intro to Web Scraping
  * Scraping Static Websites
  * Interacting with Static Websites
@@ -88,8 +100,8 @@ This work is licensed under a
  * Considerate Web Scraping
 
  [**Lecture 7: Programming**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * If/Else Statements
  * For Loops
  * Functions
@@ -99,8 +111,8 @@ This work is licensed under a
 
 
  [**Lecture 8: Fast Econometric Analysis in R**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Basic Regression Analysis
  * Fast Fixed Effects Regression
  * (Programmatic) Formulas
@@ -112,8 +124,8 @@ This work is licensed under a
 
 
  [**Lecture 9: Synthetic Control Methods**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Matching
  * Canonical Synthetic Control method (SCM)
  * Synthetic Difference-in-Differences
@@ -121,8 +133,8 @@ This work is licensed under a
 
 
  [**Lecture 10: Spatial Data**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Intro to Spatial Data in R and the sf package
  * Quick Mapping
  * Reference Systems and Projections
@@ -137,8 +149,8 @@ This work is licensed under a
  * Combining Rasters and Vectors
 
  [**Lecture 11: Machine Learning**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
  * Intro to Machine Learning
  * Resampling
  * Machine Learning for Classification
@@ -149,8 +161,8 @@ This work is licensed under a
 
 
  [**Lecture 12: Big Data Tools (Time Permitting)**]()
- ([.pdf]())
-
+ ([html]()) ([pdf]())
+ 
 <br>
 
 ***
