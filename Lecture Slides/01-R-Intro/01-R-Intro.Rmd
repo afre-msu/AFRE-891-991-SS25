@@ -1,8 +1,6 @@
 ---
 title: "Lecture 1: Introduction to R"
 author: "James Sears* <br> AFRE 891/991 SS 25 <br> Michigan State University"
-date: ".small[<br> *Parts of these slides are adapted from [“Advanced Data Analytics”](https://github.com/msu-econ-data-analytics/course-materials) by Nick Hagerty and [“Introduction to Data Science”](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html) by Rafael A. Irizarry, used under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0).]"
-
       
 output:
   xaringan::moon_reader:
@@ -1594,13 +1592,22 @@ To start, let's .hi-purple[load a dataset]<sup>4</sup> from the `dslabs` package
 pacman::p_load(dslabs)
 
 # load the historic co2 dataset
-
-data(historic_co2)
+data(historic_co2) 
+# can also wrap the dataset name in quotes: data("historic_co2")
 ```
 
 .footnote[
 .super[4] We will learn shortly how to load and save datasets from file, too.
 ]
+
+--
+
+Note that we can also interact with the dataset *as if* it were already in our environment:
+
+```{r}
+co2_df <- historic_co2
+```
+
 
 ---
 # Data Frame Info
@@ -1612,7 +1619,7 @@ To learn more about a data frame, you can
   * Examine its .hi-purple[structure] with `str()`
 
 ```{r}
-str(historic_co2)
+str(co2_df)
 ```
 
 ---
@@ -1623,8 +1630,8 @@ To learn more about a data frame, you can
   * Look at .hi-medgrn[column names] with `names()` or `colnames()`
 
 ```{r}
-names(historic_co2)
-colnames(historic_co2)
+names(co2_df)
+colnames(co2_df)
 ```
 
 ---
@@ -1635,7 +1642,7 @@ To learn more about a data frame, you can
   * Display .hi-medgrn[basic summary statistics] with `summary()`
 
 ```{r}
-summary(historic_co2)
+summary(co2_df)
 ```
 
 ---
@@ -1646,7 +1653,7 @@ To learn more about a data frame, you can
   * .hi-blue[Examine the first few rows] of data with `head(X, nrow)`
 
 ```{r}
-head(historic_co2)
+head(co2_df)
 ```
 
 ---
@@ -1666,8 +1673,8 @@ It's often useful to .hi-blue[subset] a vector based on properties of another ve
 i.e. Only take years with CO2 concentrations above the 98th percentile:
 
 ``` {r}
-high <- historic_co2$co2 > quantile(historic_co2$co2, 0.98)
-historic_co2$co2[high]
+high <- co2_df$co2 > quantile(co2_df$co2, 0.98)
+co2_df$co2[high]
 ```
 
 --
@@ -1685,12 +1692,12 @@ sum(high)
 Another useful way to .hi-purple[subset on a range of values] is `%in%`.
 
 ``` {r}
-2024 %in% historic_co2$year
+2024 %in% co2_df$year
 ```
 Let's create a 2010s version of the data only using years 2000-2010:
 
 ``` {r}
-co2_2000_2010 <- historic_co2[historic_co2$year %in% 2000:2010,]
+co2_2000_2010 <- co2_df[co2_df$year %in% 2000:2010,]
 co2_2000_2010$year
 ```
 
@@ -1701,8 +1708,8 @@ Alternatively we can subset with `which()`
   * `which()` returns the .hi-medrgn[position indices] of elements that match a .hi-blue[logical condition]
   
 ``` {r}
-which(historic_co2$year %in% 1920:1929)
-co2_1920s <- historic_co2[which(historic_co2$year %in% 1920:1929),]
+which(co2_df$year %in% 1920:1929)
+co2_1920s <- co2_df[which(co2_df$year %in% 1920:1929),]
 ```
 ---
 # Challenge
