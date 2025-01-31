@@ -804,7 +804,7 @@ There is also a [whole class of window functions](https://cran.r-project.org/web
 --
 
 
-The final set of dplyr "goodies" are the family of .hi-purple[join operations[. However, these are important enough that I want to go over these concepts in a bit more depth...
+The final set of dplyr "goodies" are the family of .hi-purple[join operations]. However, these are important enough that I want to go over these concepts in a bit more depth...
 - We will encounter and practice these many more times as the course progresses.
 
 
@@ -1020,7 +1020,6 @@ left_join(
 | `right_join(df1, df2)` | Add variables from `df1` into `df2` (keep all rows of `df2`)|
 | `full_join(df1, df2)` | Combine `df1` and `df2` (keep all rows of `df1` and `df2`)|
 | `inner_join(df1, df2)` | Keep only observations from `df1` with matches in `df2` |
-| `semi_join(df1, df2)` | Combine `df1` and `df2` (keep all rows of `df1` and `df2`)|
 
 ---
 # Filtering Joins

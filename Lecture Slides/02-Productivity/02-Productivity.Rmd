@@ -142,7 +142,7 @@ R Markdown is a document type that allows for integration of R code and output i
 `r fa('square')`  Add the `rmarkdown` package
 
 
-``` {r, eval = FALSE}
+```{r, eval = FALSE}
 install.packages("rmarkdown")
 ```
 
@@ -151,7 +151,7 @@ install.packages("rmarkdown")
 `r fa('square')` Install LaTeX
   * If just for this, can use [.hi-orange[TinyTex]](https://yihui.name/tinytex/)
 
-``` {r, eval = FALSE}
+```{r, eval = FALSE}
 # Install only if you don't have LaTeX already
 install.packages("tinytex")
 tinytex::install_tinytex()
@@ -248,6 +248,21 @@ Draw .hi-pink[tables] using | and -
 |---|---|---|
 | This | is | a |
 | Table | | wow|
+
+
+---
+# Markdown: Text Format
+
+You can adjust the .hi-medgrn[alignment] of table text by adding `:`'s in the second row:
+  - `:----` for left-aligned
+  - `:---:` for center-aligned
+  - `----:` for left-aligned
+
+| Column A | Column B | Column C|
+|:---|:---:|---:|
+| Col A | is | left-aligned |
+| Col B | is | center-aligned |
+| Col C | is | right-aligned |
 
 
 
@@ -375,7 +390,7 @@ You can call R objects from earlier chunks .hi-medgrn[inline] with
 
 
 
-``` {r}
+```{r}
 four = 2+2
 ```
 
@@ -430,7 +445,7 @@ From here on you can build the report/notebook as needed for the task.
 ---
 # Compiling/Knitting
 
-When you are ready to compile your final document, use the `Knit` button or ` Ctrl/Cmd + Shift + K`
+When you are ready to compile your final document, use the `Knit` button or `Ctrl/Cmd + Shift + K`
 
 <img src="images/rmd_knit.png" width = "100%"/> 
 
@@ -462,7 +477,7 @@ class: inverse, middle
                   Divorce Rates in Maine",
          subtitle = "2000-2009",
          x = "Margarine Consumption per Capita",
-        y = "Divorce Rate")`
+        y = "Divorce Rate")
      ```     
   1. Knit and save a PDF/HTML copy of the file to the "output" folder
   
