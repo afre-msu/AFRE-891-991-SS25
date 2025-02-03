@@ -1,6 +1,6 @@
 ---
 title: "Lecture 4: Data Cleaning"
-author: "James Sears* <br> AFRE 891 SS 24 <br> Michigan State University"
+author: "James Sears* <br> AFRE 891/991 SS 25 <br> Michigan State University"
 date: ".small[<br> *Parts of these slides are adapted from [“Advanced Data Analytics”](https://github.com/msu-econ-data-analytics/course-materials) by Nick Hagerty and [“Data Science for Economists”](https://github.com/uo-ec607/lectures) by Grant McDermott.]"
 
       
@@ -450,20 +450,11 @@ More often than not, we'll be working with .hi-medgrn[relational data:] multiple
 .pull-left[
   .center[<img src = "images/relational-nycflights.png" width = "500" />]
 ]
-.pull-right[
--   `flights` connects to `planes` via a single variable, `tailnum`.
-
---
-
--   `flights` connects to `airlines` through the `carrier` variable.
-
---
-
--   `flights` connects to `airports` in two ways: via the `origin` and `dest` variables.
-
---
-
--   `flights` connects to `weather` via `origin` (the location), and `year`, `month`, `day` and `hour` (the time).
+.font90.pull-right[
+* `flights` connects to `planes` via a single variable, `tailnum`.
+* `flights` connects to `airlines` through the `carrier` variable.
+* `flights` connects to `airports` in two ways: via the `origin` and `dest` variables.
+* `flights` connects to `weather` via `origin` (the location), and `year`, `month`, `day` and `hour` (the time).
 ]
  
   
@@ -474,7 +465,6 @@ More often than not, we'll be working with .hi-medgrn[relational data:] multiple
 To join relation data, we need .hi-blue[key variable(s)] that .hi-blue[uniquely identifies an observation].
 
 * In `planes`, the key is `tailnum`.
-
 --
 
 * In `weather`, the key consists of 5 variables: (`year`, `month`, `day`, `hour`, `origin`).
@@ -487,12 +477,10 @@ There are two types of keys:
   
 1. A .hi-medgrn[primary key] uniquely identifies an observation in .hi-medgrn[its own data frame].
   * `planes$tailnum` is a .hi-medgrn[primary key] because it uniquely identifies each plane in the `planes` data frame.
-
 --
 
 1. A .hi-purple[foreign key] uniquely identifies an observation in .hi-purple[another data frame].
   * `flights$tailnum` is a .hi-purple[foreign key] because it appears in the `flights` data frame where it matches each flight to a unique plane.
-
 --
 
 A variable can be .hi-slate[both a primary key *and* a foreign key].
@@ -889,15 +877,17 @@ Now .hi-blue[separate] the cleaned height into feet and inch variables.
 To do this, we'll need one of the `separate_` functions. There are two types:
 
 --
-.hi-medgrn[1\. separate_wider_X]: separate one variable into .hi-medgrn[multiple columns]
+
+1. .hi-medgrn[separate_wider_X]: separate one variable into .hi-medgrn[multiple columns]
+
   * `separate_wider_delim()`: split on a .hi-purple[delimiter]
   * `separate_wider_position()`: split on .hi-red[position]
   * `separate_wider_regex()`: split on a .hi-pink[regular expression]
 
-
 --
 
-.hi-blue[2\. separate_longer_X]: separate one variable into .hi-medgrn[multiple rows]
+2. .hi-blue[separate_longer_X]: separate one variable into .hi-blue[multiple rows]
+
   * `separate_longer_delim()`: split on a .hi-purple[delimiter]
   * `separate_longer_position()`: split on .hi-red[position]
 
@@ -905,20 +895,28 @@ To do this, we'll need one of the `separate_` functions. There are two types:
 ---
 # Separate Wider
 
-.hi-medgrn.center[1\. separate_wider_X]: separate one variable into .hi-blue[multiple columns]
+.hi-medgrn[1\. separate_wider_X]: separate one variable into .hi-medgrn[multiple columns]
   * `separate_wider_delim()`: split on a .hi-purple[delimiter]
   * `separate_wider_position()`: split on .hi-red[position]
   * `separate_wider_regex()`: split on a .hi-pink[regular expression]
 
 
-.font90.less-left[
+
 ```{r}
 df_wide <- select(col, state, county) %>% slice(83:86)
 df_wide
 ```
-]
 
-.font90.more-right[
+
+---
+# Separate Wider
+
+.hi-medgrn[1\. separate_wider_X]: separate one variable into .hi-medgrn[multiple columns]
+  * `separate_wider_delim()`: split on a .hi-purple[delimiter]
+  * `separate_wider_position()`: split on .hi-red[position]
+  * `separate_wider_regex()`: split on a .hi-pink[regular expression]
+
+.font90[
 ```{r}
 df_wide %>% separate_wider_delim(county, # variable to split
               delim = " ",  # delimiter to use
@@ -929,28 +927,38 @@ df_wide %>% separate_wider_delim(county, # variable to split
 ]
 
 
+
 ---
 # Separate Longer
 
 
-.hi-blue.center[2\. separate_longer_X]: separate one variable into .hi-medgrn[multiple rows]
+.hi-blue[2\. separate_longer_X]: separate one variable into .hi-blue[multiple rows]
   * `separate_longer_delim()`: split on a .hi-purple[delimiter]
   * `separate_longer_position()`: split on .hi-red[position]
 
 
-.font80-pull-left[
 ```{r, echo = F}
 df_long <- select(col, state, college) %>% slice_sample(n = 10)
 df_long
 ```
-]
 
-.font80-pull-right[
+
+---
+# Separate Longer
+
+
+.hi-blue[2\. separate_longer_X]: separate one variable into .hi-blue[multiple rows]
+  * `separate_longer_delim()`: split on a .hi-purple[delimiter]
+  * `separate_longer_position()`: split on .hi-red[position]
+
+
+.font90[
 ```{r}
 df_long %>% 
   separate_longer_delim(college, delim = " ")
 ```
 ]
+
 
 
 ---
