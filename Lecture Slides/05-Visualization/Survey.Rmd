@@ -1,0 +1,164 @@
+---
+title: "Bonus: Survey Analysis"
+author: "James Sears <br> AFRE 891/991 SS 25 <br> Michigan State University"
+
+
+      
+output:
+  xaringan::moon_reader:
+    css: [msu-default.css, msu-metropolis.css, metropolis-fonts]
+    lib_dir: libs
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      fig_caption: true
+
+header-includes:
+  -\usepackage{amsmath}
+---
+
+```{css, echo=FALSE}
+# CSS for including pauses in printed PDF output (see bottom of lecture)
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.remark-code-line {
+  font-size: 95%;
+}
+.small {
+  font-size: 75%;
+}
+.scroll-output-full {
+  height: 90%;
+  overflow-y: scroll;
+}
+.scroll-output-75 {
+  height: 75%;
+  overflow-y: scroll;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(fontawesome)
+knitr::opts_chunk$set(
+	fig.align = "center",
+	cache = FALSE,
+	dpi = 300,
+  warning = F,
+  message = F,
+	fig.height = 5,
+	out.width = "80%"
+)
+```
+
+# Table of Contents
+
+1. [Anonymous Survey Analysis](#survey)
+
+
+---
+class: inverse, middle
+name: survey
+
+# Anonymous Survey Analysis
+
+---
+# Anonymous Survey!
+
+Thank you to everyone who filled out the survey. What are the takeaways?
+
+```{r, echo = F}
+pacman::p_load(readxl, tidyverse)
+
+svy_df <- read_xlsx("data/AFRE 891_991 Anonymous Survey.xlsx") 
+colnames(svy_df) <- c("time", "version", "past_r", "content", "addtl", "other")
+```
+
+
+---
+
+# Past R
+
+```{r, echo = F}
+group_by(svy_df, past_r) %>%
+  summarise(count = n()) %>%
+  mutate(past_r = as.character(past_r)) %>%
+ggplot() +
+  geom_col(aes(x=past_r, y = count), fill = "dodgerblue", alpha = 0.7) +
+  theme_minimal() +
+  scale_x_discrete(labels = c("1" = "I thought R was a letter in the alphabet",
+                              "10" = "I am Hadley Wickham")) +
+  labs(y = "Count", x = "Past R (1-10)") 
+```
+
+---
+
+# Assignments: Prefer
+
+```{r, echo = F}
+svy_assign <- mutate(svy_df, 
+  prefer_graded_wk = ifelse(str_detect(addtl, "additional graded week-specific"),1,0),
+  prefer_graded_lec = ifelse(str_detect(addtl, "additional graded lecture-specific"),1,0),
+  prefer_graded_content =   ifelse(str_detect(addtl, "I am content with the number/structure"),1,0),
+  prefer_ungraded = ifelse(str_detect(addtl, "additional ungraded"),1,0)
+       ) %>%
+  pivot_longer(cols = starts_with("prefer"),
+               names_to = "prefer",
+               values_to = "agree") %>%
+  mutate(prefer = case_when(
+    str_detect(prefer, "graded_wk") ~ "Week-Specific\nAssignments",
+    str_detect(prefer, "graded_lec") ~ "Lecture-Specific\nAssignments",
+    str_detect(prefer, "graded_content") ~ "Content with\nGraded",
+  TRUE ~     "Additional\nUngraded Practice"
+  )) %>%
+  group_by(prefer) %>%
+  summarise(sum = sum(agree))
+
+ggplot(svy_assign) +
+  geom_col(aes(x=prefer, y = sum), fill = "forestgreen", alpha = 0.7) +
+  labs(y = "Count", x = NULL) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size=16, margin=margin(t=10)))
+```
+---
+
+# Lecture Structure
+
+```{r, echo = F}
+svy_lec <- mutate(svy_df, 
+  prefer_cut_depth = ifelse(str_detect(addtl, "cut depth"),1,0),
+  prefer_cut_breadth = ifelse(str_detect(addtl, "cut breadth of "),1,0),
+  prefer_cut_lec =   ifelse(str_detect(addtl, "entire lecture/content"),1,0),
+  prefer_content = ifelse(str_detect(addtl, "content with the current balance"),1,0)
+       ) %>%
+  pivot_longer(cols = starts_with("prefer"),
+               names_to = "prefer",
+               values_to = "agree") %>%
+  mutate(prefer = case_when(
+    str_detect(prefer, "cut_depth") ~ "Cut\nDepth",
+    str_detect(prefer, "cut_breadth") ~ "Cut\nBreadth",
+    str_detect(prefer, "cut_lec") ~ "Cut\nTopic",
+  TRUE ~     "Content with\nBalance"
+  )) %>%
+  group_by(prefer) %>%
+  summarise(sum = sum(agree))
+
+ggplot(svy_lec) +
+  geom_col(aes(x=prefer, y = sum), fill = "violet", alpha = 0.7) +
+  labs(y = "Count", x = NULL) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size=16, margin=margin(t=10)))
+```
+
+
+```{r gen_pdf, include = FALSE, cache = FALSE, eval = FALSE}
+infile = list.files(pattern = 'Survey.html')
+pagedown::chrome_print(input = infile, timeout = 200)
+```
