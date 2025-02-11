@@ -66,8 +66,8 @@ This work is licensed under a
  * Data Wrangling with dplyr
  * Data Tidying with tidyr
 
- [**Lecture 4: Cleaning**]()
- ([html]()) ([pdf]())
+ [**Lecture 4: Cleaning**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/b40ee493d5f6c3640de7dfa5ac05935c8a1e9c98/Lecture%20Slides/04-Cleaning)
+ ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b40ee493d5f6c3640de7dfa5ac05935c8a1e9c98/Lecture%20Slides/04-Cleaning/04-Cleaning.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b40ee493d5f6c3640de7dfa5ac05935c8a1e9c98/Lecture%20Slides/04-Cleaning/04-Cleaning.pdf))
  
  * Paths and Importing Data
  * Keys and Relational Data
@@ -75,8 +75,8 @@ This work is licensed under a
  * Number Storage
  * Data Cleaning Checklist
 
- [**Lecture 5: Visualization**]()
- ([html]()) ([pdf]())
+ [**Lecture 5: Visualization**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/b40ee493d5f6c3640de7dfa5ac05935c8a1e9c98/Lecture%20Slides/05-Visualization)
+ ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b40ee493d5f6c3640de7dfa5ac05935c8a1e9c98/Lecture%20Slides/05-Visualization/05-Visualization.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b40ee493d5f6c3640de7dfa5ac05935c8a1e9c98/Lecture%20Slides/05-Visualization/05-Visualization.pdf))
  
  * Principles of Data Visualization
  * Getting started with ggplot2
