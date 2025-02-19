@@ -18,6 +18,7 @@ output:
 
 header-includes:
   -\usepackage{amsmath}
+  
 ---
 
 ```{css, echo=FALSE}
