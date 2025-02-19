@@ -1,0 +1,759 @@
+---
+title: "Lecture 6: Data Acquisition"
+author: "James Sears* <br> AFRE 891/991 SS 25 <br> Michigan State University"
+date: ".small[<br> *Parts of these slides are adapted from [“Data Science for Economists”](https://github.com/uo-ec607/lectures) by Grant McDermott and [“Advanced Data Analytics”](https://github.com/msu-econ-data-analytics/course-materials) by Nick Hagerty.]"
+
+      
+output:
+  xaringan::moon_reader:
+    css: [msu-default.css, msu-metropolis.css, metropolis-fonts]
+    lib_dir: libs
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      fig_caption: true
+
+header-includes:
+  -\usepackage{amsmath}
+  
+---
+
+```{css, echo=FALSE}
+# CSS for including pauses in printed PDF output (see bottom of lecture)
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.remark-code-line {
+  font-size: 95%;
+}
+.small {
+  font-size: 75%;
+}
+.scroll-output-full {
+  height: 90%;
+  overflow-y: scroll;
+}
+.scroll-output-75 {
+  height: 75%;
+  overflow-y: scroll;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(fontawesome)
+knitr::opts_chunk$set(
+	fig.align = "center",
+	cache = FALSE,
+	dpi = 300,
+  warning = F,
+  message = F,
+	fig.height = 5,
+	out.width = "80%"
+)
+```
+
+# Table of Contents
+
+1. [Prologue](#prologue)
+
+2. [Intro to Web Scraping](#web)
+
+3. [Scraping Static Websites - Part 1](#static_pt1)
+
+---
+class: inverse, middle
+name: prologue
+
+# Prologue
+
+---
+# Prologue
+
+Let's load in the packages that we'll need for today.
+
+
+```{r}
+pacman::p_load(lubridate, rvest, stringr, tidyverse)
+```
+
+
+---
+# Data Acquisition
+
+In order to wrangle, clean, or visualize data, we first need... data.
+
+--
+
+<br>
+.center[
+<img src = "images/tim_eric.gif" /img>
+]
+
+---
+
+# Where Do Data Come from?
+
+There is a whole spectrum, from DIY to plug-and-chug.
+
+--
+
+.hi-purple[1\. Pre-cleaned datasets posted on secondary repositories]
+  - General and journal replication repositories
+    - e.g. [Harvard Dataverse](https://dataverse.harvard.edu/)
+  - Community-based repositories
+    - e.g. [Kaggle](https://www.kaggle.com/datasets)
+  - Public GitHub repositories
+    - e.g. [Johns Hopkins COVID-19 caseloads, deaths, and vaccination data](https://github.com/CSSEGISandData/COVID-19)
+
+---
+# Where Do Data Come from?
+
+There is a whole spectrum, from DIY to plug-and-chug.
+
+.hi-medgrn[2\. Open data libraries]
+  - US Gov't: [Data.gov](https://data.gov/) 
+  - Institutions, non-profits, and thinktanks
+    - e.g. [World Bank Open Data](https://data.worldbank.org/), [Pew Research](https://www.pewresearch.org/tools-and-resources/), [NBER Public Use Data](https://www.nber.org/research/data?page=1&perPage=50), [Economic Policy Institute](https://www.epi.org/data/), [AEA Data Sources](https://www.aeaweb.org/resources/data)
+  - Tech and other sites
+    - e.g. [data.world](https://data.world/datasets/environment), [Our World in Data](https://ourworldindata.org/), [Stanford Large Network Datasets](https://snap.stanford.edu/data/)
+  - [Map of 2600+ Open Data Portals Worldwide](https://opendatainception.io/)
+
+---
+# Where Do Data Come from?
+    
+There is a whole spectrum, from DIY to plug-and-chug.
+
+.hi-blue[3\. Websites of primary data providers]
+   - Government agencies; some private companies and NGOs; scientific researchers.
+    - i.e. [EPA + USGS Water Quality Portal](https://www.waterqualitydata.us/)
+
+.hi-pink[4\. Programmatic data access through Application Program Interfaces (APIs)]
+  - We'll talk more about these next lecture
+  
+---
+
+# Where Do Data Come from?
+
+There is a whole spectrum, from DIY to plug-and-chug.
+
+.hi-blue[5\. Liberate previously inaccessible data]
+  - Build relationships with people in government or the private sector.
+  - Find the right person, cold-email them and ask politely.
+    - i.e. my master's thesis!
+  - File a Freedom of Information Act (FOIA) request (a last resort; very aggressive move).
+
+---
+
+# Where Do Data Come from?
+
+.hi-dkgrn[6\. Compile data yourself]
+  - Assemble systematic information from many disparate sources.
+  - E.g. historical archives, websites, PDF reports.
+
+.hi-purple[7\. Collect your own primary data]
+  - Run surveys or experiments.
+
+---
+
+# Where to Look for Data?
+
+There is .hi-medgrn[no "one-stop shop"]. Where to look entirely depends on your topic.
+
+For economics research:
+--
+
+* .hi-slate[Search the literature:] Find papers related to your topic and check the Data section.
+  - Good for learning the "standard" sources for common things (e.g., weather data).
+--
+
+* .hi-slate[Find your own data] that the literature hasn't used yet.
+  - It's hard to find a novel use for an already widely-used dataset.
+  - Cross-disciplinary arbitrage
+--
+
+* .hi-slate[Combine data in new ways:] most new projects will require joining data from 2+ sources.
+  - E.g. state-level policy changes + household-level outcome data.
+
+
+---
+
+# Where to Look for Data?
+
+There is .hi-medgrn[no "one-stop shop"]. Where to look entirely depends on your topic.
+
+A few useful starting points:
+- ["How to Find Data: Tips for Finding Data"](https://davidson.libguides.com/data/tips) (Davidson College Library).
+- ["Data Sets for Quantitative Research"](https://libraryguides.missouri.edu/datasets/public-use) (University of Missouri Libraries).
+- [Google Dataset Search](https://datasetsearch.research.google.com/), [AWS Data Exchange](https://aws.amazon.com/opendata/?wwps-cards.sort-by=item.additionalFields.sortDate&wwps-cards.sort-order=desc)
+
+
+--
+
+The majority of data sources described above have the data easily accessible once found. 
+
+If the data aren't already machine readable, then we can take advantage of...
+
+---
+class: inverse, middle
+name: web
+
+# Intro to Web Scraping
+
+---
+
+# Web Scraping
+.pull-left[
+.hi-medgrn[Web scraping] is the process of .hi-purple[extracting semi-structured web data] and .hi-purple[converting into a structured dataset]
+  - Useful when information is already online but not available in a handy format.
+  ]
+  .pull-right[
+  <img src = "images/yp1.png" /img>
+  
+]
+
+---
+
+# Structure of Webpages
+
+Webpages are largely made out of .hi-slate[two types of files] that we have to parse:
+
+--
+.pull-left[
+.hi-medgrn[HTML]
+
+* .hi-medgrn[H]yper.hi-medgrn[T]ext .hi-medgrn[M]arkup .hi-medgrn[L]anguage is a .hi-medgrn[markup language], Like Markdown
+* It specifies the .hi-medgrn[structure] of a webpage.
+]
+--
+.pull-right[
+.hi-blue[CSS]
+
+* .hi-blue[C]ascading .hi-blue[S]tyle .hi-blue[S]heets is a language for .hi-blue[formatting the appearance of a webpage]
+  * CSS .hi-purple[properties] specify .hi-purple[how]to format: what font, what color, how wide
+  * CSS .hi-pink[selectors] specify .hi-pink[what] to format: which structural elements get what rule
+]
+
+---
+
+# How Websites Render Content
+
+It's also worth realising that there are .hi-slate[two ways] that web content gets rendered in a browser:
+  1. .hi-blue[Server-side (back-end)]
+  1. .hi-medgrn[Client-side (front-end)]
+
+<br>
+
+You can read [here](https://www.codeconquest.com/website/client-side-vs-server-side/) for more details (including example scripts), but for our purposes the essential features are as follows...
+
+
+---
+
+# Server-Side Content Rendering
+
+.pull-left[
+The scripts that build a .hi-blue[server-side] website aren't run on our computer
+  * Rather, the script that "builds" the site is .hi-blue[run on a host server]
+    - All information is directly embedded in the webpage's HTML
+  * e.g. Wikipedia tables are already populated with all the info we see in our browser
+]
+.pull-right[
+  <img src = "images/prominence1.png" /img>
+
+]
+
+
+---
+
+# Server-Side Content Rendering
+
+.pull-left[
+The scripts that build a .hi-blue[server-side] website aren't run on our computer
+  * Rather, the script that "builds" the site is .hi-blue[run on a host server]
+    - All information is .hi-blue[directly embedded] in the webpage's HTML
+  * e.g. Wikipedia tables are already populated with all the info we see in our browser
+]
+.pull-right[
+* .hi-blue[Webscraping process:] finding the correct selectors (CSS or Xpath), iterating through (dynamic) webpages (e.g. "Next page" and "Show more" tabs)
+* .hi-blue[Key concepts:] CSS, Xpath, HTML
+]
+
+
+
+---
+
+# Client-Side Content Rendering
+
+The scripts that build a .hi-medgrn[client-side] website aren't run on our computer
+
+  * Website contains an empty template of HTML and CSS
+    * May contain a "skeleton" table without any values
+  * When we visit the page URL, our browser sends a .hi-medgrn[request] to the host server
+  * If everything is okay (e.g. our request is valid), then the server sends a .hi-medgrn[response] script, which our browser executes and uses to populate the HTML template with the specific information that we want.
+  
+
+---
+
+# Client-Side Content Rendering
+
+  * If everything is okay (e.g. our request is valid), then the server sends a .hi-medgrn[response] script, which our browser executes and uses to populate the HTML template with the specific information that we want.
+  
+    <img src = "images/census_api.png" /img>
+
+---
+
+# Web Scraping
+
+Over the next two lectures we'll cover the main differences between the two approaches and general workflows.
+
+However, I want to forewarn that web scraping typically involves a fair bit of .hi-medgrn[detective work], iterating and adjusting steps
+  * According to the type of data you want
+  * To match the specifics of a given website
+  
+--
+
+In short, web scraping involves .hi-blue[as much art as it does science.] 
+
+--
+
+The good news, though: .hi-pink[if you can see it, you can scrape it.]
+
+---
+# Ethical + Legal Considerations
+
+The last line brings up an important consideration: just because you .hi-medgrn[can] scrape it, doesn't mean you .hi-purple[should]. 
+
+--
+
+.pull-left[
+.center[.underline[.hi-pink[Legality]]]
+
+* In short, it is .hi-pink[currently legal] to scrape data from the web using automated tools as long as the data are .hi-pink[publicly available] (hiQ Labs vs. Linkedin) 
+  * We'll chat more later on about what this means for "hidden" APIs
+* May get blocked due to violating a site's Terms of Service preventing scraping
+]
+.pull-right[
+.center[.underline[.hi-purple[Ethicality]]]
+
+* Need to consider the impact your scraper will have on the host server
+  * Easy to write a function that can overwhelm a website's host with rapid requests
+  * We'll return to the "be nice" mantra later on
+]
+
+---
+class: inverse, middle
+name: static_pt1
+
+# Scraping Static Websites
+
+
+---
+
+# Static Scraping: Preliminaries
+
+
+Today we'll be using [SelectorGadget](https://selectorgadget.com/), which is a Chrome extension that makes it easy to discover CSS selectors.  
+  * Install the extension directly [here](https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb).
+
+--
+
+Please note that SelectorGadget is only available for .hi-blue[Chrome]. If you prefer using .hi-medgrn[Firefox], then you can try [ScrapeMate](https://addons.mozilla.org/en-US/firefox/addon/scrapemate/).
+
+---
+
+# Static Scraping: Preliminaries
+
+The primary R package that we'll be using today is [rvest](https://rvest.tidyverse.org/), a simple webscraping library inspired by Python's [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/), but with extra tidyverse functionality. 
+
+.hi-slate[rvest] is designed to work with webpages that are built server-side and thus requires knowledge of the relevant CSS selectors... 
+
+--
+
+Which means that now is probably a good time for us to cover what these are in more detail. 
+
+---
+
+# CSS Selectors and SelectorGadget
+
+CSS .hi-pink[selectors] are the .hi-pink["what"] of the display rules. They identify which rules should be applied to which elements. 
+  * E.g. Text elements that are selected as .hi-medgrn[".h1"] (i.e. top line headers) are usually larger and displayed more prominently than text elements selected as .hi-medgrn[".h2"] (i.e. sub-headers).
+
+
+The key point is that if you can .hi-pink[identify the CSS selector(s)] of the content you want, then you can .hi-pink[isolate it from the rest] of the webpage content that you don't want. 
+
+---
+
+# CSS Selectors and SelectorGadget
+
+
+This where SelectorGadget comes in. We'll work through an extended example (with a twist!) below, but I highly recommend looking over this [quick vignette](https://rvest.tidyverse.org/articles/selectorgadget.html) soon.
+
+
+.footnote[Here are two helpful links if you're interested in reading more about [CSS](https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS/How_CSS_works) (i.e Cascading Style Sheets) and [SelectorGadget](http://selectorgadget.com/)]
+
+
+---
+
+# Application 1: Wikipedia
+
+Let's say you watched the U.S. Olympic Marathon Trials last year and now want to scrape the wikipedia page on [marathon world record progression](https://en.wikipedia.org/wiki/Marathon_world_record_progression)
+  * Women's record: 3:40:22 in 1926 to 2:11:53 last year!
+
+--
+
+First, open up this page in your browser. Take a look at its structure: What type of objects does it contain? How many tables does it have? Do these tables all share the same columns? What row- and columns-spans? Etc.
+
+---
+
+# Application 1: Wikipedia
+
+.pull-left[
+    <img src = "images/wiki1.png" /img>
+
+]
+.pull-right[
+    <img src = "images/wiki2.png" /img>
+
+]
+
+---
+# Application 1: Wikipedia
+
+
+Once you've familiarised yourself with the structure, read the whole page into R using the `rvest::read_html()` function.
+
+```{r m100_read_html}
+mthn = read_html("https://en.wikipedia.org/wiki/Marathon_world_record_progression") 
+mthn
+```
+
+---
+# Application 1: Wikipedia
+
+As you can see, this is an [XML](https://en.wikipedia.org/wiki/XML) document that contains .hi-slate[everything] needed to render the Wikipedia page.<sup>1</sup>
+
+--
+
+It's kind of like viewing someone's entire LaTeX document (preamble, syntax, etc.) when all we want are the data from some tables in their paper.
+
+
+.footnote[<sup>1</sup> XML stands for Extensible Markup Language and is one of the primary languages used for encoding and formatting web pages.]
+
+---
+# First Table: Women's Records
+
+
+Let's start by scraping our first table from the page, which documents the [women's record progression](https://en.wikipedia.org/wiki/Marathon_world_record_progression#Women). 
+
+The first thing we need to do is identify the table's unique CSS selector using SelectorGadget.
+
+--
+
+.hi-slate[Note:] this *will* require trial and error - and a lot of clicking.
+
+
+---
+# First Table: Women's Records
+
+.less-left[Start by activating SelectorGadget and clicking on a chart element.]
+.more-right[
+.center[
+    <img src = "images/wiki_table2_select1.png" width = "650" /img>
+]
+]
+
+---
+# First Table: Women's Records
+
+
+
+.less-left[Clicking on another chart element expands the selection (but too much!)
+]
+.more-right[
+.center[
+    <img src = "images/wiki_table2_select2.png" width = "650" /img>
+]
+]
+
+---
+# First Table: Women's Records
+
+.less-left[Click the elements you *don't* want until they turn red:
+
+]
+.more-right[
+.center[
+    <img src = "images/wiki_table2_select3.png" width = "650" /img>
+]
+]
+
+
+---
+# First Table: Women's Records
+Working through this iterative process yields 
+
+`"div+ .wikitable :nth-child(1)"`.
+
+We can use this unique CSS selector to isolate the women's record table content from the rest of the HTML document. 
+  * .hi-medgrn[Extract the table content] with `html_element()`
+  * Parse the .hi-pink[HTML table into an R data frame] with `html_table()`
+
+
+---
+# First Table: Women's Records
+
+  * .hi-medgrn[Extract the table content] with `html_element()`
+  * Parse the .hi-pink[HTML table into an R data frame] with `html_table()`
+
+```{r women}
+women <- mthn %>%
+  html_element("div+ .wikitable :nth-child(1)") %>% ## select table element
+  html_table()                                      ## convert to data frame
+
+women
+```
+
+
+
+---
+# First Table: Women's Records
+
+Great, it worked! Now convert the date string to a format that R actually understands.<sup>2</sup>
+
+
+```{r women_2}
+women %>%
+  mutate(Date = mdy(Date)) %>% ## convert string to date format
+  head(4)
+```
+.footnote[<sup>2</sup> *Note:* If column name had spaces or capital letters, we could use the `janitor::clean_names()` convenience function to clean them. (Q: How else could we have done this?) 
+]
+
+---
+# First Table: Women's Records
+
+Alright that mostly worked, but there are a few hyperlink references in the dates leading to `NA`s. 
+  * This is a case where using a regular expression is convenient: match the pattern `"[nb X]"` at the .hi-medgrn[end of the strings]
+
+```{r women_3}
+women <- women %>%
+  mutate(across(where(is.character), # mutate across all character strings
+                ~str_replace(.x, "\\[nb [0-9]+\\]$", "")), # remove [nb 0-9] 
+         Date = mdy(Date))  # convert string to date format
+
+women
+```
+---
+# Table 2: Men's Records
+
+We could stop here and plot the women's records, but while we're here let's grab the men's records as well.
+
+
+
+.hi-slate[Challenge:] take a couple minutes to use SelectorGadget and find the CSS selector for the men's record table.
+  * Don't peek at next slide until you give it a shot!
+```{r, eval = F}
+men <- mthn %>%
+  html_element("") %>% ## add the selector!
+  html_table()    %>%
+  mutate(across(where(is.character), # mutate across all character strings
+                ~str_replace(.x, "\\[nb [0-9]+\\]$", "")), # remove [nb 0-9] 
+         Date = mdy(Date)) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+# Table 2: Men's Records
+
+```{r}
+men <- mthn %>%
+  html_element("p+ .wikitable :nth-child(1)") %>% ## add the selector!
+  html_table()    %>%
+  mutate(across(where(is.character), # mutate across all character strings
+                ~str_replace(.x, "\\[nb [0-9]+\\]$", "")), # remove [nb 0-9] 
+         Date = mdy(Date)) 
+tail(men)
+```
+
+---
+# Browser Inspection Tools
+
+SelectorGadget is a great tool, but sometimes it .hi-medgrn[takes more work than necessary] and isn't available in all browsers.
+
+--
+.pull-left[
+.hi-slate[Alternate approach:] use the [inspect web element](https://www.lifewire.com/get-inspect-element-tool-for-browser-756549)
+  * Chrome: Right-click > "Inspect" (`Ctrl + Shift + I`)
+  * Scroll over source elements until the table of interest is highlighted
+  * Use the selector that pops up over the element
+    * i.e. `"table.wikitable"`
+]
+.pull-right[
+.center[
+    <img src = "images/wiki_table1_inspect2.png" width = "650" /img>
+]
+]
+
+---
+# Duplicate Selectors
+
+If we look at the source code a bit more we can see that the selector `table.wikitable` .hi-medgrn[isn't unique]!
+
+--
+
+In cases like this, use `html_elements()` to retrieve all matching elements as a list
+```{r}
+mthn_tabs <- mthn %>%
+  html_elements("table.wikitable") ## select all elements matching the selector
+
+# first match is men's results
+men2 <- mthn_tabs[[1]] %>% html_table()
+
+# second match is women's results
+women2 <- mthn_tabs[[2]] %>% html_table()
+```
+
+---
+# Marathon Progression
+
+
+
+.hi-slate[Challenge:] combine both tables into a single dataframe and plot the record progression
+  * Clean the `Time` variable (get rid of alphanumeric characters at the end)
+  * Separate the time variable into hours/minutes/seconds using `separate()`
+  * Use `hours(), minutes(), seconds()` from `lubridate` to create a time variable for the marathon time
+  * Create a plot with
+    * Marathon time on the y-axis
+      * Make sure to include a `scale_y_time()` layer!
+    * Date on the x-axis
+    * Linetype aesthetic mapping based on the group (men vs. women)
+    * Use a nice theme
+    
+Answer in a few slides (no peeking until you've tried first)
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+# Marathon Progression
+
+```{r, eval = F}
+men <- mutate(men, Group = "Men")
+women <- mutate(women, Group = "Women")
+
+mthn_prog <- rbind(men, women) %>%
+  mutate(Time = str_replace_all(Time, "[:alpha:]", "")) %>%
+   separate(col = "Time", into = c("Hours", "Minutes", "Seconds"), sep = ":") %>%
+  # add time variable using lubridate functions
+  mutate(mthn_time = hours(Hours) + minutes(Minutes) + seconds(Seconds))
+  
+
+ggplot(mthn_prog, aes(x = Date, y = mthn_time)) +
+  geom_line(aes(linetype = Group)) +
+  scale_y_time() +
+  labs(y = "Marathon World Record",
+       x = "Year") +
+  theme_minimal()
+```
+
+
+---
+# Marathon Progression
+
+```{r, echo = F}
+men <- mutate(men, Group = "Men")
+women <- mutate(women, Group = "Women")
+
+mthn_prog <- rbind(men, women) %>%
+  mutate(Time = str_replace_all(Time, "[:alpha:]", "")) %>%
+   separate(col = "Time", into = c("Hours", "Minutes", "Seconds"), sep = ":") %>%
+  # add time variable using lubridate functions
+  mutate(mthn_time = hours(Hours) + minutes(Minutes) + seconds(Seconds))
+  
+
+ggplot(mthn_prog, aes(x = Date, y = mthn_time)) +
+  geom_line(aes(linetype = Group)) +
+  scale_y_time() +
+  labs(y = "Marathon World Record",
+       x = "Year") +
+  theme_minimal()
+```
+
+---
+
+# Table of Contents
+
+1. [Prologue](#prologue)
+
+2. [Intro to Web Scraping](#web)
+
+3. [Scraping Static Websites - Part 1](#static_pt1)
+
+
+
+
+```{r gen_pdf, include = FALSE, cache = FALSE, eval = FALSE}
+infile = list.files(pattern = 'Acquisition.html')
+pagedown::chrome_print(input = infile, timeout = 200)
+```
