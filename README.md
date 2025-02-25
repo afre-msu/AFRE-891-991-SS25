@@ -88,13 +88,13 @@ This work is licensed under a
 
  [**Lecture 6: Data Acquisition**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/05e017570a3f548a35347a3cc3395a937af0d8ea/Lecture%20Slides/06-Acquisition)
  
- ([Part 1 html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/05e017570a3f548a35347a3cc3395a937af0d8ea/Lecture%20Slides/06-Acquisition/06-Acquisition.html)) ([Part 1 pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/05e017570a3f548a35347a3cc3395a937af0d8ea/Lecture%20Slides/06-Acquisition/06-Acquisition.pdf))
 
- Part 1:
+
+ Part 1  ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/05e017570a3f548a35347a3cc3395a937af0d8ea/Lecture%20Slides/06-Acquisition/06-Acquisition.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/05e017570a3f548a35347a3cc3395a937af0d8ea/Lecture%20Slides/06-Acquisition/06-Acquisition.pdf))
  * Intro to Web Scraping
  * Scraping Static Websites
 
-Part 2:
+Part 2  ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/4cbcaf17e16134dfa37dc5ef8f68e08137c98a76/Lecture%20Slides/06-Acquisition/06-Acquisition-Part2.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/4cbcaf17e16134dfa37dc5ef8f68e08137c98a76/Lecture%20Slides/06-Acquisition/06-Acquisition-Part2.pdf))
  * Interacting with Static Websites
  * Scraping Dynamic and Interactive Websites
  * APIS
