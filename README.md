@@ -97,13 +97,15 @@ This work is licensed under a
 Part 2  ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/4cbcaf17e16134dfa37dc5ef8f68e08137c98a76/Lecture%20Slides/06-Acquisition/06-Acquisition-Part2.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/4cbcaf17e16134dfa37dc5ef8f68e08137c98a76/Lecture%20Slides/06-Acquisition/06-Acquisition-Part2.pdf))
  * Interacting with Static Websites
  * Scraping Dynamic and Interactive Websites
+
+Part 3 ([html]()) ([pdf]())
  * APIS
  * Explicit API Endpoint, No Key
  * Explcity API Endpoint with Key
  * Hidden APIs
  * Considerate Web Scraping
-
- [**Lecture 7: Programming**]()
+ 
+[**Lecture 7: Programming**]()
  ([html]()) ([pdf]())
  
  * If/Else Statements
