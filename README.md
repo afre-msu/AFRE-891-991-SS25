@@ -98,7 +98,7 @@ Part 2  ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/4cbcaf17e1613
  * Interacting with Static Websites
  * Scraping Dynamic and Interactive Websites
 
-Part 3 ([html]()) ([pdf]())
+Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e5663719289493d61dab24a2f8c15/Lecture%20Slides/06-Acquisition/06-Acquisition-API.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e5663719289493d61dab24a2f8c15/Lecture%20Slides/06-Acquisition/06-Acquisition-API.pdf))
  * APIS
  * Explicit API Endpoint, No Key
  * Explcity API Endpoint with Key
