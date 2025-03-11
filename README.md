@@ -105,8 +105,8 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
  * Hidden APIs
  * Considerate Web Scraping
  
-[**Lecture 7: Programming**]()
- ([html]()) ([pdf]())
+[**Lecture 7: Programming**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/ea651fa6faf15fb9e0cd549a7ae1f6cc2d704c3e/Lecture%20Slides/07-Programming)
+ ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/ea651fa6faf15fb9e0cd549a7ae1f6cc2d704c3e/Lecture%20Slides/07-Programming/07-Programming.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/ea651fa6faf15fb9e0cd549a7ae1f6cc2d704c3e/Lecture%20Slides/07-Programming/07-Programming.pdf))
  
  * If/Else Statements
  * For Loops
