@@ -1,0 +1,1623 @@
+---
+title: "Lecture 7: Programming"
+author: "James Sears* <br> AFRE 891/991 SS 25 <br> Michigan State University"
+date: ".small[<br> *Parts of these slides are adapted from [“Data Science for Economists”](https://github.com/uo-ec607/lectures) by Grant McDermott and [“Advanced Data Analytics”](https://github.com/msu-econ-data-analytics/course-materials) by Nick Hagerty.]"
+
+      
+output:
+  xaringan::moon_reader:
+    css: [msu-default.css, msu-metropolis.css, metropolis-fonts]
+    lib_dir: libs
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      fig_caption: true
+
+header-includes:
+  -\usepackage{amsmath}
+---
+
+```{css, echo=FALSE}
+# CSS for including pauses in printed PDF output (see bottom of lecture)
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.remark-code-line {
+  font-size: 95%;
+}
+.small {
+  font-size: 75%;
+}
+.scroll-output-full {
+  height: 90%;
+  overflow-y: scroll;
+}
+.scroll-output-75 {
+  height: 75%;
+  overflow-y: scroll;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(fontawesome)
+knitr::opts_chunk$set(
+	fig.align = "center",
+	cache = FALSE,
+	dpi = 300,
+  warning = F,
+  message = F,
+	fig.height = 5,
+	out.width = "80%"
+)
+```
+
+# Table of Contents
+
+1. [Prologue](#prologue)
+
+2. [If/Else Statements](#ifelse)
+
+3. [For Loops](#for)
+
+4. [Functions](#fun)
+
+5. [Indirection and Name Injection](#indirect)
+
+6. [Vectorization](#vec)
+
+7. [Parallelization](#parallel)
+
+
+---
+class: inverse, middle
+name: prologue
+
+# Prologue
+
+
+---
+# Programming
+
+So far in class we've learned how to do a lot of things in R, but we can exponentially increase our data analytics skills (and how quickly we get things done) by learning some .hi-blue[programming].
+
+--
+
+
+* Write .hi-red[custom functions] to execute specific tasks
+  * Scrape all Yellowpages business links for a given search term in hundreds of different cities
+--
+
+* .hi-purple[Conditionally] define variables or execute different tasks
+  * Create a variable conditional on another variables' values
+--
+
+* Perform a repeated task by .hi-pink[looping over values]
+  * Create a set of state-level dummy variables from state FIPS codes
+--
+
+* Run tasks efficiently .hi-medgrn[in parallel]
+  * Calculate parcel or farm-level measures of precipitation and temperature
+
+
+---
+# Programming
+
+Packages we'll use today:
+
+```{r}
+pacman::p_load(dslabs, tidyverse, furrr, tictoc, future, progressr)
+```
+
+--
+
+And let's load in the `murders` data from the `dslabs` package:
+
+```{r}
+data(murders)
+```
+---
+class: inverse, middle
+name: ifelse
+
+# If/Else Statements
+
+---
+# If/Else Statements
+
+If/else statements are a type of .hi-medgrn[conditional expression].
+  * Check to see if a logical condition is True
+
+--
+  
+  * If True, do a thing
+--
+  
+  * If False:
+    * Do a different thing,
+    * Do nothing, or
+    * Check *another* condition, do a thing if True, etc.
+
+---
+
+# If/Else Statements
+
+For example: print the reciprocal of `a`, unless `a` is 0.
+
+```{r}
+a = 0
+
+if(a != 0) {
+  
+  print(1 / a)
+  
+} else {
+  
+  print("Reciprocal does not exist.")
+  
+}
+```
+
+--
+
+Statements like this are used for .hi-blue[control flow] of your code.
+* Used all the time in software development
+* Used occasionally in data analysis, more often in custom functions and packages.
+
+
+---
+
+# If/Else Statements
+
+You can also link together multiple condition with `else if`s.
+```{r}
+if(a > 0) {
+  
+  print("a is Positive")
+  
+} else if (a < 0){
+    
+  print("a is Negative")
+
+} else {
+  
+  print("a is Zero")
+}
+  
+
+```
+
+---
+
+# If/Else Statements
+A related function that you *will* use all the time in data analysis: `ifelse`. 
+
+--
+
+.center[
+syntax: `ifelse(CONDITION, ACTION_IF_TRUE, ACTION_IF_FALSE)`
+]
+
+  * `CONDITION`: a logical condition
+  *`ACTION_IF_TRUE`: what to do if the condition is true 
+  *`ACTION_IF_FALSE`: what to do if the condition is false
+
+--
+
+For example:
+```{r}
+a = 0
+ifelse(a > 0, 1/a, NA)
+```
+
+---
+
+# If/Else Statements
+
+.center[
+syntax: `ifelse(CONDITION, ACTION_IF_TRUE, ACTION_IF_FALSE)`
+]
+
+
+
+`ifelse` is particularly useful because it is .hi-purple[vectorized] and can be applied over  .hi-purple[a vector of elements all at once] 
+
+--
+
+For example, to change negative numbers to missing:
+```{r}
+b = c(0, 1, 2, -3, 4)
+ifelse(b < 0, NA, b)
+```
+
+
+---
+
+# If/Else Statements
+
+.center[
+syntax: `ifelse(CONDITION, ACTION_IF_TRUE, ACTION_IF_FALSE)`
+]
+
+
+
+`ifelse` is particularly useful because it is .hi-purple[vectorized] and can be applied over  .hi-purple[a vector of elements all at once] 
+
+
+
+Or for adding a conditional variable - for example, whether or not a state is Michigan
+
+```{r}
+murders <- murders %>% mutate(
+    is_michigan = ifelse(state == "Michigan", "Is Michigan", "Is Not Michigan") #<<
+                  )
+murders[c(1, 23:26),]
+```
+
+
+---
+
+# if_else
+
+Note that tidyverse has its *own, expanded* version of this function: `if_else()`. Benefits include
+
+--
+
+  * Can use the optional argument `missing` to handle NA values of the condition
+  
+```{r}
+x <- c(-2:0, NA, 2)
+ifelse(x < 0, "Negative", "Positive")
+if_else(x < 0, "Negative", "Positive", "Missing")
+```
+
+---
+
+# if_else
+
+Note that tidyverse has its *own, expanded* version of this function: `if_else()`. Benefits include
+
+
+  * Preserving data types!
+  
+```{r}
+x <- factor(sample(letters[1:5], 10, replace = TRUE))
+ifelse(x %in% c("a", "b", "c"), x, NA)
+if_else(x %in% c("a", "b", "c"), x, NA)
+```
+
+---
+# case_when()
+
+While it's technically possible to use nested ifelses, friends don't let friends nest ifelses.
+
+--
+
+Instead, use .hi-slate[dplyr's] `case_when()`
+
+```{r}
+x <- 1:10
+## dplyr::case_when()
+case_when(
+  x <= 3 ~ "small",
+  x <= 7 ~ "medium",
+  TRUE ~ "big"      # Default value
+  )
+```
+---
+# case_when()
+
+Works great within `mutate()` as well!
+
+```{r}
+murders <- murders %>% mutate(
+    my_opinion = case_when(
+      state == "Michigan" ~ "Great State",
+      state %in% c("California", "Hawaii") ~ "Also Solid State",
+      state == "Missouri" ~ "More like Misery am I right",
+      TRUE ~ "A State")
+    )
+murders[c(1, 5, 12, 23, 26, 38),c(1,7)]
+```
+
+---
+class: inverse, middle
+name: for
+
+# For Loops
+
+---
+# Abstraction
+
+Often you will have tasks where you find yourself copying and pasting your code to do the same thing $n$ times, with only minor tweaks each time.
+
+Q: What's wrong with that?
+
+--
+
+A: It's:
+--
+
+  * Annoying (especially if $n$ is large)
+--
+  
+  * Hard to change later if needed
+--
+  
+  * Prone to errors/bugs
+
+Instead, you can .hi-medgrn[abstract] your code: define it once, and run it multiple times. The rest of this lecture covers tools for abstraction in different situations.
+
+A good rule to aim for is to .hi-blue[never copy-and-paste more than twice.] If you're pasting more than that, abstract it instead!
+
+---
+# Abstraction Methods
+
+There are several different methods for code abstraction that we'll go over:
+  
+  1. .hi-blue[For loops:] when you want to repeat the same code for .hi-blue[different values of a variable or vector]
+--
+
+  1. .hi-medgrn[Functions:] when you want to repeat the same code for potentially .hi-purple[different values of all arguments/variables] or with .hi-medgrn[different settings/samples]
+--
+
+  1. .hi-red[Vectorization and Functionals:] when you want to .hi-red[repeat a function] over .hi-purple[different values of arguments]
+  
+---
+# For Loops
+
+The .hi-blue[for loop] is a simple tool for .hi-blue[iteration]
+
+
+```
+for (INDEX in RANGE){
+  action(INDEX)
+}
+```
+
+
+  * `INDEX` the name of the index you want to use (often `i` but can be anything)
+    
+    * Often `i` but can be literally anything R-legal
+--
+  
+  * `RANGE` the vector of values to iterate over 
+    * Can be numbers, characters, or objects
+--
+
+  * `action` the stuff to do for each index value in the specified range
+  
+---
+# For Loops
+
+.hi-medgrn[Good use] for a for loop: repeat the same thing with minor tweaks.
+
+```{r}
+for (i in 1:6){
+  print(paste0("It is ", i, " O'Clock."))
+}
+```
+
+
+---
+# For Loops
+
+You can also combine for loops with if-else:
+
+```{r}
+for (i in c("Indiana", "Michigan", "Colorado")){
+  if (i == "Michigan"){
+      print("This is Michigan")
+  } else {
+      print("This is not Michigan")
+  }
+}
+```
+
+
+---
+# For Loops
+
+Suppose you wanted to calculate the mean of the numeric variables in `murders` and the murder rate. We could manually type and copy-paste:
+
+```{r}
+murders <- mutate(murders, rate = total/population * 1e5)
+mean(murders$total)
+mean(murders$population)
+mean(murders$rate)
+```
+
+---
+# For Loops
+
+Or we could avoid copy-past errors and use a for loop:
+
+```{r}
+for (var in c("total", "population", "rate")){
+print(mean(murders[[var]]))
+}
+```
+
+---
+# For Loops
+
+We an also loop over an .hi-blue[object in memory:]
+
+```{r}
+numeric_col <- c("total", "population", "rate")
+for (var in numeric_col){
+print(mean(murders[[var]]))
+}
+```
+---
+# For Loops
+
+Or .hi-medgrn[assign output to memory] too
+```{r}
+numeric_col <- c("total", "population", "rate")
+means <- vector() # initiate an empty vector
+for (var in numeric_col){
+means[[var]] <- mean(murders[[var]])
+}
+```
+
+
+--
+
+</br>
+
+There is one technical problem with this code. The vector storing the output .hi-purple["grows" at each iteration], which can make the loop .hi-purple[very slow].
+
+---
+# For Loops
+
+.hi-blue[Better:] give your empty vector the .hi-blue[right length] *before* starting.
+
+```{r}
+means <- vector("numeric", length = length(numeric_col)) # initiate an empty vector with same length
+for (i in 1:length(numeric_col)){
+  col_num <- which(colnames(murders) == numeric_col[i])
+  means[[i]] <- mean(murders[[col_num]])
+}
+```
+
+---
+# For Loops: Caveat
+
+For-loops are actually .hi-blue[discouraged in R programming].
+
+  * We're covering them because the concepts are foundational.
+
+  * But R has nicer ways to iterate, called .hi-medgrn[vectorization].
+    * Often *exponentially* faster
+    
+  * To do proper vectorization, we first need to know how to .hi-purple[write functions].
+
+---
+class: inverse, middle
+name: fun
+
+# Functions
+
+---
+# Functions
+
+We've already seen a .hi-medgrn[multitude of functions] in R
+  
+  * pre-packaged with base R
+  * loaded by different packages (e.g. `dplyr::mutate()`)
+  
+Regardless of where they come from, the all follow the same basic syntax:
+
+.hi-center[
+`function_name(ARGUMENTS)`
+]
+
+
+---
+# Custom Functions
+
+While we will often use pre-made functions, you can - and should! - write your own functions too. This is easy to do with the generic **`function()`** function.<sup>1</sup>
+
+If you only have a short function, you can write it all on a .hi-medgrn[single line:]
+```{r, eval = F}
+function(ARGUMENTS) OPERATIONS
+```
+
+
+.footnote[<sup>1.</sup> Yes, it's a function that let's you write functions. Very meta.] 
+
+
+
+---
+# Custom Functions
+
+Oftentimes we want our function code to span .hi-pink[multiple lines]. In this case we can use brackets around the function's operations:
+
+```{r, eval = F}
+function(ARGUMENTS) {
+  OPERATIONS
+  return(VALUE)
+}
+```
+
+
+
+
+---
+# Custom Functions
+
+Rather than write .hi-medgrn[anonymous] functions, .hi-blue[name your functions] to assign them to memory and reuse them throughout your file:
+
+```{r, eval = F}
+my_func <- function(ARGUMENTS) { #<<
+    OPERATIONS
+    return(VALUE)
+  }
+```
+
+--
+
+Try to give your functions short, pithy names that are 
+  
+  * Informative to you
+  * Clear to anyone else who might read the code
+  
+---
+# Building Custom Functions
+
+Let's start with a basic function: calculate a .hi-medgrn[number's square].<sup>2</sup>
+
+```{r}
+square <-      # function name
+  function(x){ # the arguments of our function (here just one)
+  x^2          # the operation(s) that our function performs
+  }
+```
+
+
+Testing:
+```{r}
+square(4)
+```
+
+
+.footnote[<sup>2</sup> I want to note that this .hi-blue[isn't a useful function]. R's arithmetic functions already handle vectorised exponentiation and do so very efficiently.]
+
+
+  
+---
+
+# Specifying Return Values
+
+We can .hi-blue[specify return values] with `return()`
+  * Helpful when our function performs a bunch of .hi-medgrn[intermediate steps]
+
+```{r}
+square_plus3 <- function(x){ 
+  x_sq <- x^2 # assign squared value as intermediate object
+  x_sq_pl_3 <- x_sq + 3 
+ return(x_sq_pl_3) #<<
+  }
+```
+
+ 
+---
+
+# Specifying Return Values
+
+Testing:
+
+```{r}
+square_plus3(3)
+```
+
+Note that the intermediate objects .hi-green[don't stay in memory] - they're automatically removed as soon as the function is done running.
+
+--
+
+If we left out the `return()`, the function will return .hi-pruple[the result of the very last operation]
+  * Unless you assigned it to memory, in which case you get nothing
+---
+
+# Specifying Return Values
+
+If we want to return .hi-purple[multiple objects] from our function, we need to either
+
+.hi-medgrn[1\. Return a List]
+
+  
+```{r}
+square_ret_list <- function(x){ 
+  x_sq <- x^2 # assign squared value as intermediate object 
+  res <- list(value = x, val_squared = x_sq) #<<
+  return(res) 
+  }
+
+square_ret_list(3)
+```
+---
+
+# Specifying Return Values
+
+If we want to return .hi-purple[multiple objects] from our function, we need to either
+
+.hi-blue[2\. Build a data frame] (a tidy solution!)
+
+  
+```{r}
+square_ret_df <- function(x){ 
+  x_sq <- x^2 # assign squared value as intermediate object 
+  res <- data.frame(value = x, val_squared = x_sq) #<<
+  return(res) 
+  }
+
+square_ret_df(3)
+```
+
+---
+
+# Default Argument Values
+
+We can also assign .hi-medgrn[default argument values]
+  * Allows for all/any arguments to be optional
+  * Uses the supplied value when supplied
+  * Uses provided default value when not
+  
+--
+
+Suppose we wanted to expand our function to do any exponent and not just squares:
+
+```{r}
+raise_power <- function(x = 2, power = 2){
+  res <- data.frame(
+      value = x,
+      power = power,
+      value_raised = x^power
+  )
+  return(res)
+}
+```
+
+
+
+---
+
+# Default Argument Values
+
+Setting default values doesn't affect typical function usage:
+
+```{r}
+raise_power(x = 5, power = 3) # uses specified values
+```
+
+--
+
+But now any argument that we omit will .hi-green[use the default values] and the function will run:
+
+```{r}
+raise_power() # uses default values of x and power = 2
+```
+
+---
+
+# Default Argument Values
+
+Setting default values doesn't affect typical function usage:
+
+```{r}
+raise_power(x = 5, power = 3) # uses specified values
+```
+
+Without supplying argument values, our previous function wouldn't have worked:
+
+```{r, error = T}
+square()
+```
+
+
+---
+class: inverse, middle
+name: indirect
+
+# Indirection and Name Injection
+
+---
+
+# Indirection
+
+A common use-case for custom functions is .hi-purple[iterating over variables]
+
+  * Repeat a cleaning task over multiple variables in a data frame
+  * Run analysis with a different dependent variable
+
+--
+
+For example, let's go back to our `square` function. By default it applies over an entire vector:
+
+
+```{r}
+square(murders$rate)
+```
+
+---
+
+# Indirection
+
+We could use it *within* a mutate if we want a new column in our data frame: 
+```{r}
+murders <- murders %>% 
+  mutate(rate_sq = square(rate))
+select(murders, starts_with("rate")) %>% head()
+```
+But doing this for a lot of variables would require a lot of typing (and wouldn't vectorize over multiple variables well)
+
+
+---
+
+# Indirection
+
+What we might want to do is modify our function to  use .hi-purple[variable names and the dataframe] as the arguments to directly add a new variable:
+
+```{r}
+square_df <- function(var, # variable to square
+                      df){ # data frame to square variables in
+  df <- mutate(df, 
+               newvar = var * var)
+  return(df)
+}
+```
+
+
+---
+
+# Indirection
+
+However, if we try and use this function on the `rate` variable in `murders` with a string, we get an error:
+
+```{r, error = T}
+square_df(
+  var = "rate", 
+  df = murders)
+```
+
+
+---
+
+# Indirection
+
+We get a similar error if we give the variable argument as a .hi-blue[data-variable] 
+  * .hi-blue[data-variable]: a "statistical" variable that lives .hi-blue[in a data frame]
+    * i.e. an object in the data frame (how we've been using variables in tidy verbs so far)
+    
+    
+```{r, error = T}
+square_df(
+  var = rate, 
+  df = murders)
+```
+
+
+---
+
+# Indirection
+
+This is an issue of .hi-purple[indirection], which occurs in cases like this
+  - Want to interpret the argument as an .hi-medgrn[environment-variable] rather than as a .hi-blue[data-variable].
+  - .hi-medgrn[env-variable]: "programming" variable/object that lives in your environment (i.e. data frame created with `<-`)
+    
+<br>
+
+Fortunately, there are a couple programmatic ways around this.
+
+---
+
+# Indirection
+
+.hi-purple[Solution A:] provide the argument as a .hi-blue[data-variable], then 
+  1. .hi-purple[embrace] the argument with double braces `{{ arg }}` within function operations 
+
+--
+
+```{r}
+square_embr <- function(var, # data-var rather than a string 
+                      df){ 
+  df <- mutate(df, 
+               newvar = {{ var }} * {{ var }} ) #<<
+  return(df)
+}
+square_embr(rate, murders) %>% select(rate, newvar) %>% head()
+```
+
+---
+
+# Indirection
+
+.hi-purple[Solution B:] provide the argument as a .hi-blue[data-variable], and 
+  1. .hi-red[defuse] the string with `enquo()`
+  
+  1. .hi-dkgrn[inject] the defused string back in operations with `!!defused_string`
+
+Let's work through the steps involved.
+
+---
+# Defusing and Injecting
+
+.hi-red[Defusing] an argument with  .hi-red[delays its evaluation].
+  * Use `enquo()` for defusing a single argmuent, `enquos()` for multiple simultaneously
+  
+For example, returning a defused variable highlights the different handling: 
+
+```{r}
+def_fun <- function(df, var){
+  # defuse 
+  var <- enquo(var) #<<
+  return(var)
+}
+def_fun(murders, rate)
+```
+
+---
+# Defusing and Injecting
+
+When we're ready to do something with the data-variable, we .hi-dkgrn[inject] it back in
+  * Add `!!` in front of the data-variable in the operation
+  
+
+```{r}
+def_inj_fun <- function(df, var){
+  # defuse 
+  var <- enquo(var)
+  res <- pull(df, !!var) #<<
+  return(res)
+}
+def_inj_fun(murders, rate) %>% head()
+```
+
+---
+# Defusing and Injecting
+
+.less-left[
+Using the two in our square function involves
+  1. Defuse the data-variable argument `var`
+  1. Inject it in the squaring operation with `!!`
+]
+.more-right.font90[
+```{r}
+square_def <- function(var, # data-var rather than a string 
+                      df){ 
+  var <- enquo(var) # defuse the string #<< 
+  
+  df <- mutate(df, 
+               newvar = !!var * !!var # square the defused string #<<
+               ) 
+  return(df)
+}
+square_def(rate, murders) %>% select(rate, newvar) %>% head()
+```
+]
+
+
+---
+
+# Defuse + Inject
+
+.hi-purple[Solution C:] defuse the argument with `ensym()`
+  * Allows for supplying the argument as either a .hi-pink[character string] or a .hi-blue[data variable]
+
+```{r}
+square_ensym <- function(var, df){ 
+
+  df <- mutate(df, 
+               newvar = !!ensym(var) * !!ensym(var) # square the defused string #<<
+               ) 
+  return(df)
+}
+```
+---
+
+# Defuse + Inject
+
+.hi-purple[Solution C:] defuse the argument with `ensym()`
+  * Allows for supplying the argument as either a .hi-pink[character string] or a .hi-blue[data variable]
+
+```{r}
+square_ensym("rate", murders) %>% select(rate, newvar) %>% head(3)
+square_ensym(rate, murders) %>% select(rate, newvar) %>% head(3)
+```
+
+---
+
+# ensym vs. enquo vs. {{ }}
+
+
+`ensym()` and `enquo()` are two of the [tidy defusal operators](https://rlang.r-lib.org/reference/defusing-advanced.html). But what's the difference?
+--
+
+  * `ensym()` en"symbolizes" the argument and turns it into a .hi-pink[simple symbol].
+--
+
+  * `enquo()` converts the argument to a .hi-red[quosure]
+
+--
+
+When combined with `!!` they allow for pretty advanced defusal operations.
+
+--
+
+.hi-slate[Punchline:] in most cases, .hi-purple[embracing] with `{{ }}` .hi-purple[works in most cases] and is .hi-purple[simpler]
+
+---
+
+# Name Injection
+
+We can combine defusing or embracing with .hi-purple[name injection] to customize our variable names.
+  * i.e. call the new squared rate variable `rate_sq` rather than `newvar`
+
+Often we want to programmatically create new variable names based either on
+ 1. A .hi-medgrn[supplied character string] as a function argument, or
+ 1. .hi-blue[Modify the data-variable's name] directly in the function
+ 
+ 
+---
+
+# Name Injection
+
+
+.hi-medgrn[Approach 1:] use .hi-pink[glue syntax] and .hi-blue[supply the new name as a third argument]:
+  * argument `newname` the new variable's name (as a character string)
+  
+  <br>
+  <br>
+  <br>
+  
+```{r, eval = F}
+square_inj_1 <- function(var, df,
+                       newname){ # new variable name to use #<<
+  
+
+  
+  return(df)
+}
+```
+
+
+---
+
+# Name Injection
+
+
+.hi-medgrn[Approach 1:] use .hi-pink[glue syntax] and .hi-blue[supply the new name as a third argument]:
+  * argument `newname` the new variable's name (as a character string)
+  * Glue syntax with `"{newname}"`
+  
+  <br>  
+  <br>
+  
+```{r, eval = F}
+square_inj_1 <- function(var, df,
+                       newname){ # new variable name to use 
+  
+  df <- mutate(df, 
+               "{newname}"  #<<
+  return(df)
+}
+```
+---
+
+# Name Injection
+
+
+.hi-medgrn[Approach 1:] use .hi-pink[glue syntax] and .hi-blue[supply the new name as a third argument]:
+  * argument `newname` the new variable's name (as a character string)
+  * Glue syntax with `"{newname}"`
+  * Programmatic assignment operator `:=` instead of `=`
+
+  <br>
+  
+```{r, eval = F}
+square_inj_1 <- function(var, df,
+                       newname){ # new variable name to use 
+  
+  df <- mutate(df, 
+               "{newname}" :=  #<<
+  return(df)
+}
+```
+
+---
+
+# Name Injection
+
+
+.hi-medgrn[Approach 1:] use .hi-pink[glue syntax] and .hi-blue[supply the new name as a third argument]:
+  * argument `newname` the new variable's name (as a character string)
+  * Glue syntax with `"{newname}"`
+  * Programmatic assignment operator `:=` instead of `=`
+  * quasi-quotes `{{ }}` evaluate the argument contents in the context of the data frame
+  
+```{r}
+square_inj_1 <- function(var, df,
+                       newname){ # new variable name to use 
+  
+  df <- mutate(df, 
+               "{newname}" := {{ var }} * {{ var }} ) #<<
+  return(df)
+}
+```
+
+---
+
+# Name Injection
+
+
+.hi-medgrn[Approach 1:] use .hi-pink[glue syntax] and .hi-blue[supply the new name as a third argument]:
+  * argument `newname` the new variable's name (as a character string)
+  * Glue syntax with `"{newname}"`
+  * Programmatic assignment operator `:=` instead of `=`
+  * quasi-quotes `{{ }}` evaluate the contents in the context of the data frame
+  
+```{r}
+square_inj_1(rate, murders, "rate_sq") %>% select(rate, rate_sq) %>% head()
+```
+---
+
+# Name Injection
+
+
+.hi-medgrn[Approach 1] works with `ensym()` too 
+  
+```{r}
+square_inj_1b <- function(var, df,
+                       newname){ # new variable name to use #<<
+  
+  df <- mutate(df, 
+               "{newname}" := !!ensym(var) * !!ensym(var) ) #<<
+  return(df)
+}
+square_inj_1b("rate", murders, "rate_squared") %>% select(rate, rate_squared) %>% head()
+```
+
+
+
+---
+
+# Name Injection
+
+.hi-blue[Approach 2A:] use .hi-pink[glue syntax] and .hi-blue[create the name from the data-variable]:
+  * `expr()` "defuses" the supplied expression
+    * Converts the data-variable (i.e. `rate`) to a name
+  * Glue syntax with `"{newname}"`
+  * Programmatic assignment operator `:=` instead of `=`
+  
+  
+```{r}
+square_inj_2a <- function(var, df){ 
+    new_var <- expr(rate) %>% paste0("_sq") # create new variable name internally #<<
+    
+  df <- mutate(df, 
+               "{new_var}" := {{ var }} * {{ var }} ) # glue syntax to assign new name #<<
+  return(df)
+}
+square_inj_2a(rate, murders) %>% select(rate, rate_sq) %>% head()
+```
+
+
+
+---
+
+# Name Injection
+
+.hi-blue[Approach 2B:] use .hi-pink[glue syntax] and .hi-red[embracing]:
+  * Glue syntax with `"{{newname}}_sq"` (no intermediate name object)
+  * Programmatic assignment operator `:=` instead of `=`
+  
+```{r}
+square_inj_2b <- function(var, df){ 
+
+  df <- mutate(df, 
+               "{{ var }}_sq" := {{ var }} * {{ var }} ) # Glue syntax without intermediate object #<<
+  return(df)
+}
+square_inj_2b(rate, murders) %>% select(rate, rate_sq) %>% head()
+```
+
+
+
+---
+
+# Name Injection
+
+.hi-slate[Approach 2C:] you guessed it, `ensym()` still works, allowing the `var` argument to be *either* a data-variable or string.
+```{r}
+square_inj_2c <- function(var, df){ 
+
+  df <- mutate(df, 
+               "{{ var }}_sq" := !!ensym(var) * !!ensym(var) ) # Glue syntax without intermediate object #<<
+  return(df)
+}
+square_inj_2c("rate", murders) %>% select(rate, rate_sq) %>% head()
+```
+
+---
+class: inverse, middle
+name: vec
+
+# Vectorization
+
+
+---
+
+# Vectorization
+
+Where the real benefits of custom functions, indirection, and name injection come in are with .hi-medgrn[vectorization] and .hi-purple[functionals].
+
+
+
+These approaches give a new way to repeatedly iterate a function over a vector of argument values.
+
+<br> 
+
+--
+
+Two main approaches:
+  1. .hi-pink[apply] family
+    - `apply()`, `lapply()`, `sapply()`, `mapply()`
+  1. Tidy.hi-blue[map]  .hi-green[list] functions in .hi-slate[purrr]
+    - `map()` and `map2()` with `list_c()`, `list_rbind()`, `list_cbind()`
+      - Recently superseded the `map_dfr()`, `map_dfc()` functions
+
+
+---
+
+# apply Family
+
+The base R .hi-pink[apply] family  gives methods for iterating a function over a vector of arguments depending on the format and type of output we want
+
+| Function         | Description                         | Output Type |
+|------------------|-------------------------------------|-------------|
+| `lapply(X, FUN)` | apply `FUN` to every element of `X` | list        |
+| `sapply(X, FUN)` | apply `FUN` to every element of `X` | vector, matrix, or array |
+| `vapply(X, FUN)` | `sapply` with specified output types | vector or array |
+| `mapply(FUN, ARG1, ARG2, ...)` | multivariate version of `sapply` | list|
+| `apply(X, MARGIN, FUN)` | apply `FUN` to every element of `X` over dimension `MARGIN` | vector, matrix, array, or list|
+
+---
+# Apply
+
+Suppose you wanted to standardize all the numeric variables in the `murder` data.
+
+You might write a function like this:
+
+```{r}
+calculate_z = function(x) {
+  z = (x - mean(x)) / sd(x)
+  return(z)
+}
+```
+
+
+---
+# apply Functions
+
+However, applying it over all the numeric variables at once leads to this:
+
+```{r, error = T}
+numeric_cols = c("total", "population", "rate")
+murder_numbers = murders[numeric_cols]
+
+calculate_z(murder_numbers)
+```
+
+This is an example of a function that .hi-slate[isn't vectorized.]
+
+
+---
+# apply Functions
+
+While we could put our function into a for loop, a more efficient/legible approach would use `sapply`<sup>3</sup>:
+
+.center[
+`sapply(X, FUN)`
+]
+```{r}
+sapply(murder_numbers, calculate_z) %>% head()
+```
+
+.footnote[<sup>3.</sup> `sapply` is an example of a .hi-dkgrn[functional:] a function that takes another function as an argument.]
+
+---
+# map and list_ Functions
+
+The tidy alternative to the apply functions are the `map_` family in .hi-slate[purrr]
+  * Work a lot like the `apply_` functions, but with tidyverse syntax
+  * Combine with `list_` functions to convert to a vector or dataframe
+
+  
+| Function         | Description                         | Output Type |
+|------------------|-------------------------------------|-------------|
+| `map(X, FUN)` |apply `FUN` to every element of `X` | list |
+| `map2(X1, X2, FUN)` | apply `FUN` to every element of `X1` and `X2` | list |
+| `list_c()` | combine list elements into a vector | vector       |
+| `list_rbind()` | combines elements into a data frame row-wise | data frame |
+| `list_cbind()` | combines elements into a data frame column-wise | data frame |
+
+
+---
+# map()
+
+Just like with `sapply()` we can iterate our `calculate_z()` over all numeric variables:
+
+.center[
+`map(X, FUN)`
+]
+```{r}
+z_map <- map(murder_numbers, calculate_z)
+class(z_map)
+z_map
+```
+
+---
+
+# list_
+
+The `list_` functions provide a convenient way to convert `map()` output directly to a dataframe:
+  * Loop our `square_inj_2c()` function over all three numeric variables
+  * Combine each of the dataframes
+```{r}
+map_sq <- map(
+  c("total", "population", "rate"), # first argument: variable names
+  square_inj_2c, # function to iterate over
+  df = murders # additional static arguments
+) %>%
+  list_cbind(name_repair = "unique") # account for duplicated names
+class(map_sq)
+colnames(map_sq)
+```
+
+---
+class: inverse, middle
+name: parallel
+
+# Parallelization
+
+
+---
+
+# Parallelization
+
+One distinct advantage of R over Stata is the ability to .hi-medgrn[run code in parallel]
+  * i.e. split a repeated task across multiple CPU cores simultaneously
+  * Useful in any situation where we would use `map()` - i.e. bootstrapping, extracting parcel-level raster information
+    
+--
+
+.pull-left[
+.center.hi-medgrn[Stata]
+  * SE: runs in "serial" on one core
+  * MP Student: 4 core ($375/yr)
+  * MP 8 Core: $655/yr
+]
+
+--
+
+.pull-right[
+.center[.hi-blue[R] and .hi-slate[furrr]]
+  * `future_map` functions work exactly like .hi-slate[purrr's] `map()`
+  * Run across as many cores as your system has
+  * See progress with .hi-slate[progressr]
+  * Annual cost: $0
+]
+
+
+---
+
+# The Power of Parallel
+
+To see the benefit of running code in parallel, let's write a .hi-blue[purposefully slow function:]
+
+```{r}
+slow_square <- function(x = 1){
+  Sys.sleep(1/2) # wait half a second
+  return(x^2)
+}
+```
+
+
+---
+
+# The Power of Parallel
+
+How long does it take to run this function?<sup>5</sup>
+  * Use `tic()` and `toc()` from .hi-slate[tictoc] to calculate elapsed time
+  
+```{r}
+tic()
+square_serial <- map(1:24, slow_square)
+toc()
+```
+.footnote[<sup>5</sup> `sapply()` and `map()` take nearly the exact same time. There are also several [type-specific versions](https://www.rdocumentation.org/packages/purrr/versions/0.2.5/topics/map) of `map` in case you want output to be a logical, integer, double, or character, etc.]
+
+--
+
+The function runs in .hi-medgrn[serial]. so it takes approximately $1/2*24 = 12$ seconds
+  * Using one core, runs for $x=1$, then when done moves on to $x=2, ..., 24$
+  
+---
+
+# Parallelization
+
+We can .hi-blue[speed this up]. Modern CPUs are made up of multiple .hi-pink[cores] (processing units) that can all be given tasks simultaneously, allowing us to run code in .hi-blue[parallel].
+
+--
+
+First, use `future::availableCores()` to determine how many cores you have:
+
+```{r}
+availableCores()
+```
+
+
+Your number of cores will likely differ
+  * Most laptops have at least 4-8 cores these days.
+  * Even recent Chromebooks have 6!
+  
+---
+
+# furrr
+
+.hi-slate[furrr] functions make it easy to .hi-blue[parallelize] in just a few steps.
+  1. Set a "plan" for how the code will be run in parallel
+    * Number of cores to use, how to execute tasks
+  1. Use `future_` version of your preferred `map_` function
+  1. Close parallel plan
+
+--
+
+First, we will .hi-medgrn[set the plan] and tell R how to execute the parallel session:
+
+```{r}
+# Calculate a "safe" number of cores (allow for background processes)
+n_cores = availableCores() - 2
+
+# Set the "plan"
+plan(strategy = "multisession", # run in parallel in separate background R sessions
+     workers = n_cores # use the desired number of cores
+     )
+```
+
+---
+
+# furrr
+
+.hi-slate[furrr] functions make it easy to .hi-blue[parallelize] in just a few steps.
+  1. Set a "plan" for how the code will be run in parallel
+    * Number of cores to use, how to execute tasks
+  1. Use `future_` version of your preferred `map_` function
+  1. Close parallel plan
+
+
+Next, let's repeat the previous analysis with `future_map()`.
+
+```{r}
+tic()
+square_parallel <- future_map(1:24, slow_square)
+toc()
+```
+
+---
+
+# furrr
+
+.hi-slate[furrr] functions make it easy to .hi-blue[parallelize] in just a few steps.
+  1. Set a "plan" for how the code will be run in parallel
+    * Number of cores to use, how to execute tasks
+  1. Use `future_` version of your preferred `map_` function
+  1. Close parallel plan
+
+
+Now that we're done with our parallel session, reset things back to serial:
+
+```{r}
+plan("sequential")
+```
+
+---
+
+# Benefits of Parallelization
+
+Here we reduced execution time by ~ 1/3 due to some overhead of creating/assigning objects to the cores. However, the benefits of parallel increase substantially with
+  * Larger objects
+  * Greater number of repetitions (must be independent tasks)
+  * More cores
+  
+--
+
+For example, if we run our slow function over the integers 1 to 1,000:
+
+| Approach | Time | Time Savings |
+|----------|------|-------------------|
+| Serial | 1,017.3 Seconds| 0%|
+| Parallel, 5 cores | 204.33 Seconds | 80% |
+| Parallel, 10 cores | 103.87 Seconds | 90% |
+| Parallel, 20 cores | 51.49 Seconds| 95% |
+
+```{r, include = F, eval = F}
+# Running over a 1000 length vector in serial:
+tic()
+square_serial_long <- map(1:1000, slow_square)
+toc()
+
+
+# Run over 5 cores
+plan(strategy = "multisession", # run in parallel in separate background R sessions
+     workers = 5 # use the desired number of cores
+     )
+
+# Running over the same long vector in parallel:
+tic()
+square_parallel_long <- future_map(1:1000, slow_square)
+toc()
+
+
+
+# Run over 10 cores
+plan(strategy = "multisession", # run in parallel in separate background R sessions
+     workers = 10 # use the desired number of cores
+     )
+
+# Running over the same long vector in parallel:
+tic()
+square_parallel_long <- future_map(1:1000, slow_square)
+toc()
+
+
+# Run over 20 cores
+plan(strategy = "multisession", # run in parallel in separate background R sessions
+     workers = n_cores # use the desired number of cores
+     )
+
+# Running over the same long vector in parallel:
+tic()
+square_parallel_long <- future_map(1:1000, slow_square)
+toc()
+
+plan("sequential")
+```
+
+---
+# Progress with *progressr*
+
+For longer tasks, it can be helpful to see progress. We can do this by using the functions within .hi-slate[progressr].
+
+First, let's add a .hi-purple[progress indicator] to our function.
+
+```{r}
+slow_square_prog <- function(x = 1){
+  p() # add in progress indicator
+  Sys.sleep(1/2) # wait half a second
+  return(x^2)
+}
+```
+
+---
+# Progress with *progressr*
+
+Next, write a .hi-medgrn[wrapper function] to our future map to add in the progress bar:
+
+```{r}
+par_slow_square <- function(x){
+  p <- progressor(steps = length(x))
+  future_map(x, slow_square_prog)
+}
+```
+
+---
+# Progress with *progressr*
+
+Finally, wrap the function in `with_progress({})` to get a .hi-pink[visible progress bar].
+
+```{r, eval = F}
+with_progress({
+  par_slow_square(1:24)
+})
+```
+---
+# Tweaking Progress Bar 
+
+There are a lot of [different progress bar options](https://cran.r-project.org/web/packages/progressr/vignettes/progressr-intro.html), including
+  * Change the shape used in the ASCII progress bar
+```{r, eval = F}
+pacman::p_load(cli)
+handlers(handler_txtprogressbar(char = cli::col_red(cli::symbol$smiley)))
+
+with_progress({
+  par_slow_square(1:24)
+})
+```
+
+---
+# Tweaking Progress Bar 
+
+There are a lot of [different progress bar options](https://cran.r-project.org/web/packages/progressr/vignettes/progressr-intro.html), including
+  * Continuous color bar
+```{r, eval = F}
+handlers("cli")
+
+with_progress({
+  par_slow_square(1:24)
+})
+```
+
+
+
+---
+# Tweaking Progress Bar 
+
+There are a lot of [different progress bar options](https://cran.r-project.org/web/packages/progressr/vignettes/progressr-intro.html), including
+  * Audible beeps at start, intervals, and finish
+```{r, eval = F}
+pacman::p_load(beepr)
+handlers("cli", "beepr")
+
+with_progress({
+  par_slow_square(1:24)
+})
+```
+
+
+
+---
+# Tweaking Progress Bar 
+
+We can customize the sounds more fully with `handler_beepr()`:
+
+```{r, eval = F}
+sound_path <- paste0(getwd(), "/data/finish.wav")
+handlers(list(
+  "cli",
+         handler_beepr(
+           initiate = NA_integer_, # disable start sound
+           update = NA_integer_, # disable progress sound
+           finish = sound_path # set custom finish sound
+            )
+          )
+        )
+with_progress({
+  par_slow_square(1:10)
+})
+```
+
+
+---
+
+# Table of Contents
+
+1. [Prologue](#prologue)
+
+2. [If/Else Statements](#ifelse)
+
+3. [For Loops](#for)
+
+4. [Functions](#fun)
+
+5. [Indirection and Name Injection](#indirect)
+
+6. [Vectorization](#vec)
+
+7. [Parallelization](#parallel)
+
+
+
+
+
+```{r gen_pdf, include = FALSE, cache = FALSE, eval = FALSE}
+infile = list.files(pattern = 'Programming.html')
+pagedown::chrome_print(input = infile, timeout = 2000)
+```
