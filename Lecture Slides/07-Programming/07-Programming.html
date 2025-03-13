@@ -482,7 +482,7 @@ ifelse(x %in% c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), x, NA)
 ```
 
 ```
-##  [1]  2 NA  2 NA  2 NA NA  2  1  1
+##  [1]  2 NA  2  3  1 NA NA  3 NA  3
 ```
 
 ``` r
@@ -490,8 +490,8 @@ if_else(x %in% c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), x, NA)
 ```
 
 ```
-##  [1] b    &lt;NA&gt; b    &lt;NA&gt; b    &lt;NA&gt; &lt;NA&gt; b    a    a   
-## Levels: a b d e
+##  [1] b    &lt;NA&gt; b    c    a    &lt;NA&gt; &lt;NA&gt; c    &lt;NA&gt; c   
+## Levels: a b c d e
 ```
 
 ---
@@ -1894,7 +1894,7 @@ slow_square &lt;- function(x = 1){
 
 # The Power of Parallel
 
-How long does it take to run this function?&lt;sup&gt;5&lt;/sup&gt;
+How long does it take to run this function?&lt;sup&gt;4&lt;/sup&gt;
   * Use `tic()` and `toc()` from .hi-slate[tictoc] to calculate elapsed time
   
 
@@ -1905,9 +1905,9 @@ toc()
 ```
 
 ```
-## 12.14 sec elapsed
+## 12.19 sec elapsed
 ```
-.footnote[&lt;sup&gt;5&lt;/sup&gt; `sapply()` and `map()` take nearly the exact same time. There are also several [type-specific versions](https://www.rdocumentation.org/packages/purrr/versions/0.2.5/topics/map) of `map` in case you want output to be a logical, integer, double, or character, etc.]
+.footnote[&lt;sup&gt;4&lt;/sup&gt; `sapply()` and `map()` take nearly the exact same time. There are also several [type-specific versions](https://www.rdocumentation.org/packages/purrr/versions/0.2.5/topics/map) of `map` in case you want output to be a logical, integer, double, or character, etc.]
 
 --
 
@@ -1985,7 +1985,7 @@ toc()
 ```
 
 ```
-## 10.45 sec elapsed
+## 8.06 sec elapsed
 ```
 
 ---
@@ -2028,10 +2028,11 @@ For example, if we run our slow function over the integers 1 to 1,000:
 
 
 
+
 ---
 # Progress with *progressr*
 
-For longer tasks, it can be helpful to see progress. We can do this by using the functions within .hi-slate[progressr].
+To track progress in parallel,  we can use the  .hi-slate[progressr] package.&lt;sup&gt;5&lt;/sup&gt;
 
 First, let&#39;s add a .hi-purple[progress indicator] to our function.
 
@@ -2044,6 +2045,7 @@ slow_square_prog &lt;- function(x = 1){
 }
 ```
 
+.footnote[&lt;sup&gt;5&lt;/sup&gt; When you&#39;re *not* in parallel, you can track progress just by adding the `progress = TRUE` argument in any of the`map()` functions.]
 ---
 # Progress with *progressr*
 
