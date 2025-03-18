@@ -116,13 +116,16 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
  * Parallelization
 
 
- [**Lecture 8: Fast Econometric Analysis in R**]()
- ([html]()) ([pdf]())
- 
+ [**Lecture 8: Fast Econometric Analysis in R**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/de14171b934153725b698e2e385d9dae02cfadd8/Lecture%20Slides/08-Regression)
+
+
+ Part 1  ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/de14171b934153725b698e2e385d9dae02cfadd8/Lecture%20Slides/08-Regression/08-Regression-Pt1.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/de14171b934153725b698e2e385d9dae02cfadd8/Lecture%20Slides/08-Regression/08-Regression-Pt1.pdf))
  * Basic Regression Analysis
  * Fast Fixed Effects Regression
  * (Programmatic) Formulas
  * Standard Errors
+
+ Part 2 ([html]()) ([pdf]())
  * Regression Output
  * IV Regression
  * Difference-in-Differences
