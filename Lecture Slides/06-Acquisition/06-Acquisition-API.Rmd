@@ -254,7 +254,7 @@ If you installed JSONView, it will look a lot nicer
 # Load JSON into R
 
 Next, use the `fromJSON()` function in the [excellent .hi-slate[jsonlite] package](https://cran.r-project.org/web/packages/jsonlite/index.html) to read JSON into R.
-
+ 
 ```{r}
 nyc_trees <- fromJSON("https://data.cityofnewyork.us/resource/uvpi-gqnh.json") %>% 
   as.data.frame()
