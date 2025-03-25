@@ -133,10 +133,13 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
 
 
  [**Lecture 9: Synthetic Control Methods**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/3cd583381bd5d620228f19ec7d9bd1512218787a/Lecture%20Slides)
- ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/3cd583381bd5d620228f19ec7d9bd1512218787a/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt1.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/3cd583381bd5d620228f19ec7d9bd1512218787a/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt1.pdf))
  
+ 
+ Part 1 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/3cd583381bd5d620228f19ec7d9bd1512218787a/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt1.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/3cd583381bd5d620228f19ec7d9bd1512218787a/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt1.pdf))
  * Matching
- * Canonical Synthetic Control method (SCM)
+ * Canonical Synthetic Control Method (SCM)
+
+ Part 2  ([html]()) ([pdf]())
  * Synthetic Difference-in-Differences
  * Partially Pooled SCM
 
