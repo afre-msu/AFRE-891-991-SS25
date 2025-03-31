@@ -144,17 +144,21 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
  * Partially Pooled SCM
 
 
- [**Lecture 10: Spatial Data**]()
- ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/88d6928e1c939e8b59e1ced68983bfa248128a0f/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt2.html)) ([pdf]())
+ [**Lecture 10: Spatial Data**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial)
  
+  Intro to Spatial Data ([html]([https://github.com/afre-msu/AFRE-891-991-SS25/blob/88d6928e1c939e8b59e1ced68983bfa248128a0f/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt2.html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial/Spatial-Intro.html))) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial/Spatial-Intro.pdf))
  * Intro to Spatial Data in R and the sf package
  * Quick Mapping
  * Reference Systems and Projections
+
+ Part 2: Vector Data ([html]()) ([pdf]())
  * Working with Vector Data
   * Spatial Queries: Measurement
   * Spatial Queries: Relationship
   * Geometric Operations
   * Spatial Joins
+
+Part 3: Raster  Data ([html]()) ([pdf]())
  * Intro to Raster Data
  * Common Raster Data
  * Raster Operations
