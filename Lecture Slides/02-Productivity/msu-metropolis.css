@@ -286,3 +286,8 @@ hr, .mline h1::after {
 .under {
   text-decoration: underline;
 }
+
+/* turns on code text wrapping https://github.com/yihui/xaringan/issues/225*/
+pre {
+  white-space: pre-wrap;
+}
