@@ -1,0 +1,929 @@
+---
+title: "Lecture 10: Spatial Data in R"
+subtitle: "Getting Started with sf"
+author: "James Sears <br> AFRE 891/991 SS 2% <br> Michigan State University"
+date: ".small[<br> *Parts of these slides are adapted from [“Advanced Data Analytics”](https://github.com/msu-econ-data-analytics/course-materials) by Nick Hagerty and [“R Geospatial Fundamentals”](https://github.com/dlab-berkeley/R-Geospatial-Fundamentals) by the UC Berkeley D-Lab used under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0).]"
+      
+output:
+  xaringan::moon_reader:
+    css: [msu-default.css, msu-metropolis.css, metropolis-fonts]
+    lib_dir: libs
+    latex_engine: lualatex
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      fig_caption: true
+
+header-includes:
+  -\usepackage{amsmath}
+---
+
+```{css, echo=FALSE}
+# CSS for including pauses in printed PDF output (see bottom of lecture)
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.remark-code-line {
+  font-size: 95%;
+}
+.small {
+  font-size: 75%;
+}
+.scroll-output-full {
+  height: 90%;
+  overflow-y: scroll;
+}
+.scroll-output-75 {
+  height: 75%;
+  overflow-y: scroll;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(fontawesome)
+
+# define colors
+red_pink <- "#e64173"
+turquoise <- "#20B2AA"
+orange <- "#FFA500"
+red <- "#fb6107"
+blue <- "#3b3b9a"
+green <- "#8bb174"
+grey_light <- "grey70"
+grey_mid <- "grey50"
+grey_dark <- "grey20"
+purple <- "#6A5ACD"
+slate <- "#314f4f"
+
+knitr::opts_chunk$set(
+	fig.align = "center",
+	cache = FALSE,
+	dpi = 300,
+  warning = F,
+  message = F,
+	fig.height = 5,
+	out.width = "80%"
+)
+```
+
+# Table of Contents: Today
+
+**Part 1: Getting Started**
+1. [Intro to Spatial Data in R and the `sf` package](#intro)
+
+1. [Quick Mapping](#quickmap)
+
+1. [Reference Systems and Projections](#crs)
+
+---
+# Table of Contents: Later
+
+**Part 2: Vector Data Manipulation**
+
+1. Spatial Queries
+
+1. Spatial Subsetting
+
+1. Geometric Operations
+
+1. Spatial Joins
+
+**Part 3: Raster Data** 
+
+
+1. Common Raster Data Sources
+
+1. Raster Operations 
+
+1. Combining Raster and Vector Data
+
+---
+class: inverse, middle
+name: intro
+
+# Spatial Data in R and the sf Package
+
+---
+
+# GIS
+
+The most widespread .hi-medgrn[geographic information system] is .hi-blue[ArcGIS.]
+
+--
+
+.hi-blue[Advantages of ArcGIS:]
+* Avoid coding.
+* Interface for browsing and exploring data is incredibly comprehensive and fast.
+
+--
+
+.hi-green[Why we're using R instead:]
+- Free.
+- Reproducible.
+- Scriptable.
+- Easily integrated with the rest of your project.
+- Easy to export attractive, professional maps.
+- Honestly, easier if you know some R already.
+
+
+---
+
+# sf: Simple Features
+
+`sf` is the main package for working with .hi-medgrn[vector] data in R.
+
+.center[
+<img src="images/sf.jpg" width = "50%"/>
+]
+--
+
+
+  * .hi-blue[features:]  things with a spatial location/extent
+--
+
+  * .hi-pink[simple:] linestrings and polygons are built from points (nodes) connected by straight lines (edges)
+--
+
+  * Integrates cleanly with .hi-slate[tidyverse]
+  * Since v1.0: uses spherical geometry for transformations!
+
+]
+
+.footer[<font size = "1"> Illustration by [Allison Horst](https://twitter.com/allison_horst/status/1071456081308614656) </font>]
+---
+
+# sf: Simple Features
+
+`sf` is the main package for working with .hi-medgrn[vector] data in R.
+
+Install and load it (and a couple other packages):
+```{r}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(sf, tidyverse, tmap)
+```
+
+---
+
+
+# Shapefiles
+
+The ESRI .hi-medgrn[shapefile] is the most widely used type of file .hi-medgrn[format for storing geospatial vector data]. A "shapefile" is actually a collection of 3+ files:
+
+--
+
+Required files:
+- `shp`: The main file that stores the feature geometry
+- `shx`: A positional index for locating the feature geometry in the `shp` file
+- `dbf`: The data table (in dBase IV format) that stores the attribute information for each feature
+
+
+---
+
+
+# Shapefiles
+
+The ESRI .hi-medgrn[shapefile] is the most widely used type of file .hi-medgrn[format for storing geospatial vector data]. A "shapefile" is actually a collection of 3+ files:
+
+
+Optional files:
+- `prj`: Stores the coordinate reference system information. (**should be required!**)
+- `sbn` and `sbx`: spatial index to speed up geometry operations (*used only by ESRI software*)
+- `xml`: Metadata — Stores information about the shapefile.
+- `cpg`: Specifies the code page for identifying the character encoding set to be used.
+
+All files need to be kept together in the same directory.
+
+---
+
+
+# Loading Shapefile Data
+
+List the files:
+```{r}
+dir("data/MichiganCounties")
+```
+
+Load the data with `st_read()`:
+```{r}
+counties <- st_read("data/MichiganCounties/MichiganCounties.shp")
+```
+
+
+
+---
+
+
+# Loading Shapefile Data
+
+We can also load the data by pointing to the *folder* containing the shapefile files:
+
+```{r}
+counties <- st_read("data/MichiganCounties")
+```
+
+---
+
+# Geodatabases
+
+Shapefiles have some .hi-pink[severe limitations].
+* They must be less than 2 GB.
+* Column names cannot be longer than 10 characters.
+* The number of columns is limited to 255.
+
+--
+
+Another, newer file format is called a .hi-purple[geodatabase (.gdb)].
+
+`st_read()` can handle geodatabases with the `layer` argument.
+* The important thing to keep in mind is that in your computer, the `.gdb` file *appears* to be a folder, but the individual files within it are uninterpretable.
+* `st_layers()` will show you the list of layers in a geodatabase.
+
+
+---
+
+# Geodatabases
+
+Let's say you were interested in tracking fire occurrence points through the [US Forest Service's Monitoring Trends in Burn Severity data](https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MTBS_01/MapServer).
+
+Looking at the geodatabase folder doesn't show us anything intelligible
+.center[
+<img src="images/gdb.png" width = "50%"/>
+]
+
+
+---
+
+# Geodatabases
+
+Let's say you were interested in tracking fire occurrences and burn area over time through the [US Forest Service's Monitoring Trends in Burn Severity data](https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_MTBS_01/MapServer).
+
+Checking the layers with `st_layers()`:
+
+```{r}
+st_layers("data/S_USA.MTBS_FIRE_OCCURRENCE_PT.gdb")
+```
+
+
+
+---
+
+# Geodatabases
+
+This one's easy with a single layer. Loading it in with `st_read()`:
+  * We could've omitted the `layer` argument since there's just the one
+  
+```{r}
+mtbs_area <- st_read("data/S_USA.MTBS_FIRE_OCCURRENCE_PT.gdb", 
+                     layer = "MTBS_FIRE_OCCURRENCE_PT") #<<
+```
+
+---
+# sf Object Contents
+
+Looking at the structure of the data, we can see that it's an sf object, but *also* a data frame with an extra .hi-medgrn[geometry] column.
+
+This is also easy to check in RStudio in the Environment window.
+.font70[
+```{r}
+str(counties)
+```
+]
+---
+
+# sf Geometry
+
+Looking at the geometry column a bit more reveals that
+* Each row contains a .hi-blue[feature]
+* Each feature contains a `simple feature geometry list column (sfc)`
+  * Which in turn contains a `simple feature geometry (sfg)`
+
+```{r}
+class(counties$geometry)
+
+# and for the geometry of the first feature?
+class(counties$geometry[[1]])
+
+```
+---
+
+# sf Geometry Types
+There are three main types of geometries that can be associated with `sf` object: .hi-blue[points], .hi-medgrn[lines] and .hi-purple[polygons].
+.center[
+<img src ="images/pnt_line_poly.png" width="450"></img>]
+---
+
+# sf Geometry Types
+In an `sf data.frame` these geometries are encoded in a format known as [Well-Known Text (WKT)](https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry).
+
+For example:
+
+> - POINT (30 10)
+> - LINESTRING (30 10, 10 30, 40 40)
+> - POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))
+
+
+where X,Y coordinate values are separated by a space, coordinate pairs by a comma, and geometries by parentheses
+---
+
+# sf Geometry Types
+An `sf` object may also include the variants .hi-blue[multipoints], .hi-medgrn[multilines], and .hi-purple[multipolgyons] if some of the features are composed of multiple geometries:
+
+> - MULTIPOINT ((10 40), (40 30), (20 20), (30 10))
+> - MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))
+> - MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))
+
+--
+
+For example, if we had data representing US states (one per row), we could use
+* POLYGON geometry for states like Utah or Colorado
+* MULTIPOLYGON for a state like Hawaii, which includes many islands.
+
+---
+
+# sf Geometry
+
+Another thing to note is that an sf geometry is .hi-pink[sticky]
+
+(Or like Kramer from Seinfeld: it always shows up)
+
+```{r}
+head(counties[1:5, 1:4])
+```
+
+---
+
+# sf Geometry
+
+Another thing to note is that an sf geometry is .hi-pink[sticky]
+
+(Or like Kramer from Seinfeld: it always shows up)
+
+```{r}
+filter(counties, SQMILES > 1000) %>%
+  select(LABEL) %>% head()
+```
+
+
+---
+# sf Object to Dataframe
+
+We can easily convert an .hi-blue[sf object] to a .hi-pink[regular data frame] by .hi-medgrn[removing the geometry]
+  * Convenient `st_drop_geometry()` function
+  
+```{r}
+counties_df <- st_drop_geometry(counties)
+class(counties_df)
+```
+
+---
+# dataframe to sf
+
+We can also go from a .hi-pink[dataframe] to an .hi-blue[sf object]  by defining a geometry using column(s) containing coordinate information and `st_as_sf()`
+
+--
+
+Let's add the latitude and longitude of each county's centroid to `counties_df` and convert it to an sf object with points geometry:
+```{r}
+centroids <- st_centroid(counties)
+counties_df <- mutate(counties_df, 
+                     longitude = st_coordinates(centroids)[,1],
+                     latitude = st_coordinates(centroids)[,2]) %>%
+  st_as_sf(coords = c("longitude", "latitude"), #<<
+           crs = st_crs(counties)) #<<
+class(counties_df)
+```
+
+---
+# Switching Geometry Columns
+
+Note that an sf object can have .hi-medgrn[multiple geometry columns], but only one can be
+.hi-blue[active] at a time. 
+
+We can view and switch the active geometry without deleting columns using `st_geometry()`:
+
+
+
+```{r}
+counties_comb <- mutate(counties, points = counties_df$geometry)
+st_geometry(counties_comb)
+
+```
+
+---
+# Switching Geometry Columns
+
+Note that an sf object can have multiple geometry columns, but only one can be
+.hi-blue[active] at a time. 
+
+We can view and switch the active geometry without deleting columns using `st_geometry()`:
+
+
+
+```{r}
+st_geometry(counties_comb) <- "points" #<<
+st_geometry(counties_comb)
+```
+
+---
+
+class: inverse, middle
+name: quickmap
+
+# Quick Mapping
+
+---
+
+# Quick Mapping
+
+There are several ways we can quickly make maps in R
+
+* base R's `plot()` function
+--
+
+* .hislate[tmap] package's `qtm()` function
+--
+
+* `ggplot()` and the `geom_sf()` function
+
+Later on we'll go more in-depth with how to customize maps
+
+---
+# Quick Mapping: base R
+
+```{r, out.width="75%"}
+plot(counties)
+```
+This yield a grid of maps where colors correspond to data values of the first 9 data frame columns
+---
+
+
+# Quick Mapping: base R
+To map just a single variable:
+```{r}
+plot(counties["SQMILES"])
+```
+
+This gives a **choropleth** map of county size (in square miles)
+
+> A `choropleth` map us a thematic map where data values are used to symbolize polygons
+---
+
+
+# Quick Mapping: base R
+Or just the geometry:
+```{r}
+plot(counties["geometry"])
+# alternatively: plot(st_geometry(counties))
+# alternatively: plot(counties[["geometry"]])
+# alternatively: plot(counties$geometry)
+```
+
+---
+
+# Quick Mapping: tmap (static)
+The .hi-slate[tmap] package makes is easy to make thematic maps in R, both .hi-medgrn[static] and .hi-purple[interactive]
+
+```{r, out.width="65%"}
+qtm(counties)
+```
+---
+
+# Quick Mapping: tmap (interactive)
+
+```{r, out.height="75%", out.width="100%"}
+tmap_mode("view")   # the default is mode = "plot"
+qtm(counties)
+```
+---
+# Quick Mapping: Invalid Polygons errors
+
+Sometimes you may get the error
+
+`## Error: Shape contains invalid polygons`
+
+This can usually be fixed quickly with `st_make_valid()`.
+
+```{r, out.height="75%", out.width="100%"}
+counties <- st_make_valid(counties)
+```
+---
+
+# Data Wrangling Works Normally
+
+```{r, out.height="60%", out.width="60%"}
+ingham <- filter(counties, NAME == "Ingham")
+map_ingham <- tm_shape(counties) +
+  tm_polygons(border.col = "white") +
+  tm_shape(ingham) + 
+  tm_borders(col = "green", lwd = 3)
+map_ingham
+```
+---
+
+# Quick Mapping: ggplot
+
+```{r, out.width="65%"}
+ggplot() +
+  geom_sf(data = counties)
+  
+```
+---
+
+# Quick Mapping: ggplot
+
+```{r, out.width="65%"}
+map_gg <- ggplot() +
+  geom_sf(aes(fill = SQMILES), data = counties)
+map_gg
+  
+```
+---
+
+
+# Saving your Maps and Shapefiles
+
+The save method will depend on *which* plotting approach you took.
+
+```{r, out.width="55%", eval = FALSE}
+# Static image, tmap
+tmap_save(map_ingham, filename = "output/map_ingham.png")
+
+# Static image, ggplot2
+ggsave(map_gg, filename = "map_gg.png", path = "output/", device = "png")  
+
+
+# Interactive version
+tmap_save(map_ingham, filename = "output/map_ingham.html")
+
+# Shapefile
+st_write(ingham, dsn = "output/ingham.shp", delete_dsn = TRUE)
+```
+---
+
+class: inverse, middle
+name: crs
+
+# Reference Systems and Projections
+
+
+---
+
+# Reference Systems and Projections
+
+As we discussed in the intro, we need 
+
+* A .hi-medgrn[coordinate reference system (CRS)] of our shapefiles to know where on earth a feature is pointing to
+* A .hi-blue[projection] to go from our 3D datum to a 2D map
+
+Let's work through the steps involved in setting/changing these in `sf`.
+
+---
+
+# State Borders
+
+To start, load in another shapefile of US state borders:
+```{r}
+states <- st_read("data/us_states_contiguous/states_contiguous.shp")
+```
+
+---
+# Getting the CRS
+
+What is the CRS of `states`?
+```{r}
+st_crs(states)
+```
+
+---
+
+# Getting the CRS
+
+And the CRS of `counties`?
+.scroll-output-full[
+```{r}
+st_crs(counties)
+```
+]
+
+
+---
+
+# Getting the CRS
+
+Conveniently, these two use the same CRS: same datum (WGS 84)
+```{r}
+identical(st_crs(counties), st_crs(states))
+```
+
+We'll talk shortly about what to do if these *don't* match.
+
+---
+# Plotting Two Shapefiles
+
+And plot them both with the base `plot()` function:
+```{r, out.width="65%"}
+plot(counties$geometry, col = 'lightgrey', border = 'white')
+plot(states$geometry, col = 'blue', border = 'red', lwd = 5, add = T)
+```
+
+
+---
+# Plotting Two Shapefiles: base
+
+
+What do you think happened?
+
+--
+
+`plot()` restricts to the .hi-medgrn[first object's extent].
+
+```{r}
+st_bbox(counties)
+st_bbox(states)
+```
+
+
+`st_bbox()` gets the bounding box dimensions as a `bbox` object 
+
+---
+# Plotting Two Shapefiles: ggplot
+
+
+Note that if we do it with `ggplot()`, the default behavior is different:
+* Plots the full extent of the .hi-medgrn[larger shapefile]
+* Plots layers in the .hi-blue[opposite order] they're given in the code
+
+```{r, out.width="55%"}
+ggplot() +
+  geom_sf(data = counties, col = "forestgreen") +
+  geom_sf(data = states, col = "blue", lwd = 2)
+```
+
+---
+# Plotting Two Shapefiles: ggplot
+
+We can get around this with two adjustments:
+* Specify extent to plot with `coord_sf()`
+* Switch the layer order
+
+```{r, out.width="45%", eval = F}
+ggplot() +
+  geom_sf(data = states, col = "blue", lwd = 2) +
+  geom_sf(data = counties, col = "forestgreen") +
+  coord_sf(xlim = st_bbox(counties)[c("xmin", "xmax")], #<<
+           ylim = st_bbox(counties)[c("ymin", "ymax")]) #<<
+```
+
+---
+# Plotting Two Shapefiles: ggplot
+
+```{r, out.width="85%", echo = F}
+ggplot() +
+  geom_sf(data = states, col = "blue", lwd = 2) +
+  geom_sf(data = counties, col = "forestgreen") +
+  coord_sf(xlim = st_bbox(counties)[c("xmin", "xmax")], #<<
+           ylim = st_bbox(counties)[c("ymin", "ymax")]) #<<
+```
+
+
+---
+# EPSG codes and Projected CRS
+
+CRSs are most commonly referenced by .hi-pink[EPSG codes], which you can Google.
+* The counties shapefile was in WGS 84, or EPSG:4326. [(https://epsg.io/4326)](https://epsg.io/4326)
+
+To get two shapefiles to work with each other, we need to give them the .hi-blue[same CRS].  
+
+To change a CRS, we need to use a .hi-green[Projected CRS], which consists of
+  - A .hi-medgrn[Geographic CRS]
+  - A specific .hi-purple[map projection] and related parameters used to transform the geographic coordinates to a 2D plane.
+
+
+---
+# Common Geographic CRSs
+
+
+- **4326: WGS84** (units: decimal degrees) - most common
+
+- **4269: NAD83** (units: decimal degrees) - best fit for USA, used by federal agencies
+
+- NAD83 and WGS84 are *close* but can differ by up to 1 meter in the continental USA and elsewhere up to 3m. 
+
+- Context: census tract data are only accurate +/-7 meters.
+
+---
+# Common Projected CRSs
+
+
+- **5070: USA CONUS NAD83** (meters) projected CRS for mapping the entire contiguous USA (CONUS)
+
+- **3857: Web Mercator** (meters) conformal (shape preserving) CRS used as the default in web mapping
+
+- **26915: UTM Zone 15N, NAD83** (meters) projected CRS for MI (extreme western U.P.)
+
+- **26916: UTM Zone 16N, NAD83** (meters) projected CRS for MI (Western/Central)
+
+- **26917: UTM Zone 17N, NAD83** (meters) projected CRS for MI (Flint on East)
+
+Full list/details: [https://www.spatialreference.org](https://www.spatialreference.org)
+
+View UTM Zones on map: [mangomap.com](https://mangomap.com/robertyoung/maps/69585/what-utm-zone-am-i-in-#)
+
+---
+# Projected CRS
+
+To align two shapefiles, we need to transform coordinates to the same .hi-green[Projected CRS]
+
+--
+
+**Do you *have* to use a projected CRS?**
+- No -- much of the time, it's fine to keep your spatial data in a geographic CRS.
+- Most functions will project "on the fly" using a default.
+
+--
+
+**When *should* you use a projected CRS?**
+- When doing calculations, like area or distance.
+- When you want to control the appearance of your map output.
+
+--
+
+**How should you choose a projected CRS?**
+- What you .hi-medgrn[want to preserve] (area, direction, or distance).
+- Location on Earth of the area of focus.
+
+---
+# Setting the CRS
+
+Note that most (all?) the shapefiles we read in *should* have the right CRS already defined.
+
+If you think the wrong CRS is defined or you manually created an sf object and need to add the CRS, use `st_crs()`
+
+
+```{r}
+st_crs(counties_comb) <-  5070
+```
+
+--
+
+.hi-slate[Caution:] this only .hi-medgrn[changed the metadata], and .hi-blue[did not re-project the data]! The warning tells us as much:
+
+`st_crs <- : replacing crs does not reproject data; use st_transform for that`
+
+---
+# Reprojecting the CRS
+
+To .hi-blue[*actually* transform (reproject)] the CRS, use `st_transform()`
+
+
+```{r}
+st_crs(counties_comb) <-  4326 # reset the CRS to what it was
+counties_comb <- st_transform(counties_comb, crs = 3857) # project to web mercator
+```
+
+---
+# Reprojecting the CRS
+
+More commonly, we'll reproject to another sf object's CRS:
+
+```{r, out.height = "40%"}
+counties_wm <- st_transform(counties, crs = st_crs(counties_comb))
+
+ggplot() +
+  geom_sf(data = counties[11:14,], fill = "yellow", alpha = 0.5) +
+  geom_sf(data = counties_wm[11:14,], fill = "dodgerblue", alpha = 0.5)
+```
+
+---
+# Reprojecting the CRS
+
+We can see the difference when plotting the different object versions
+```{r, out.height = "54%"}
+ggplot() +
+  geom_sf(data = counties[11,], 
+          fill = "yellow", color = NA) #WGS 84 Geographic CRS
+```
+
+---
+# Reprojecting the CRS
+
+We can see the difference when plotting the different object versions
+```{r, out.height = "54%"}
+ggplot() +
+  geom_sf(data = counties_wm[11,], 
+          fill = "dodgerblue", color = NA) # Web Mercator Projected CRS
+```
+
+---
+# More Extreme Example
+These don't actually differ, since Web Mercator is a projected version of WGS84, and matches the default projection used by ggplot for the WGS84 Object.
+
+A more extreme example would be if we accidentally used a projection suitable for Greece (EPSG 2100):
+
+```{r, out.width="52%"}
+counties_ex <- st_transform(counties, st_crs(2100))
+```
+---
+# More Extreme Example
+
+```{r, out.width="85%"}
+ggplot() +
+  geom_sf(data = counties_ex[11,], fill = "yellow", 
+          color = NA, alpha = 0.5)  # Greek onshore projection
+```
+
+---
+# More Extreme Example
+
+```{r, out.width="85%"}
+ggplot() +
+  geom_sf(data = counties_wm[11,], fill = "dodgerblue", 
+          color = NA, alpha = 0.5)  # Web Mercator Projected CRS
+```
+
+
+---
+# Reprojecting the CRS: in ggplot only
+
+If we wanted to leave the sf objects in their own CRSs but map them together, we can use `coord_sf()` to reproject .hi-medgrn[within the plot]
+
+```{r, out.width="54%"}
+ggplot() +
+  geom_sf(data = counties[11,], fill = "yellow", color = NA, alpha = 0.5) + # WGS 84 Geographic CRS
+  geom_sf(data = counties_wm[11,], fill = "dodgerblue", color = NA, alpha = 0.5) + # Web Mercator Projected CRS
+  coord_sf(crs = st_crs(3857)) #<< # reproject both to web mercator
+
+```
+
+
+---
+# Common Projections
+
+**1. Web Mercator**
+- Preserves .hi-blue[direction/angle/shape] but .hi-red[distorts area and distance].
+- Decent starting point for most places in the world.
+```{r, out.width="50%"}
+states_mercator = st_transform(states, crs = 3857)
+tmap_mode("plot")
+qtm(states_mercator)
+```
+
+
+---
+
+# Common projections
+
+**2. U.S. National Atlas (Albers) Equal Area**
+- Preserves .hi-blue[area] but .hi-red[distorts direction/angle/shape and distance].
+- Great for the continental U.S.
+```{r, out.width="50%"}
+states_albers = st_transform(states, crs = 2163)
+qtm(states_albers)
+```
+
+---
+
+# Common projections
+
+**3. UTM Zone 11N**
+- Preserves .hi-blue[direction/angle/shape] but .hi-red[distorts area and distance].
+- Different UTM zones are centered at different locations.
+- Good for maps of smaller areas.
+```{r, out.width="45%"}
+states_utm11N = st_transform(states, crs = 2955)
+qtm(states_utm11N)
+```
+
+---
+
+# Common projections
+
+**4. Pseudo Plate Carree**
+- .hi-red[Distorts everything]! Simply a graph of latitude vs. longitude.
+- Common default, but no excuse for using it these days.
+```{r, out.width="65%"}
+plot(states$geometry, asp = 1)
+```
+
+---
+# Table of Contents: Today
+
+**Part 1: Getting Started**
+1. [Intro to Spatial Data in R and the `sf` package](#intro)
+
+1. [Quick Mapping](#quickmap)
+
+1. [Reference Systems and Projections](#crs)
+
+
+```{r gen_pdf, include = FALSE, cache = FALSE, eval = FALSE}
+infile = list.files(pattern = 'Intro.html')
+pagedown::chrome_print(input = infile, timeout = 400)
+```
