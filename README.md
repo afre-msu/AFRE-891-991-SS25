@@ -146,7 +146,7 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
 
  [**Lecture 10: Spatial Data**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial)
  
-  Intro to Spatial Data ([html]([https://github.com/afre-msu/AFRE-891-991-SS25/blob/88d6928e1c939e8b59e1ced68983bfa248128a0f/Lecture%20Slides/09-Synthetic/09-Synthetic-Pt2.html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial/Spatial-Intro.html))) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial/Spatial-Intro.pdf))
+  Intro to Spatial Data ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/acf82d7cf88a18910ab642e6329fe07be4717ed3/Lecture%20Slides/10-Spatial/Spatial-Intro.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/f4d3dbfb44359316052103f1558b5adf52d0c232/Lecture%20Slides/10-Spatial/Spatial-Intro.pdf))
  * Intro to Spatial Data in R and the sf package
  * Quick Mapping
  * Reference Systems and Projections
