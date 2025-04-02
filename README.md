@@ -151,7 +151,7 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
  * Quick Mapping
  * Reference Systems and Projections
 
- Part 2: Vector Data ([html]()) ([pdf]())
+ Part 2: Vector Data ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b567ecdb04028d217fcf048b8c1460c8832940a2/Lecture%20Slides/10-Spatial/Spatial-Vector.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b567ecdb04028d217fcf048b8c1460c8832940a2/Lecture%20Slides/10-Spatial/Spatial-Vector.pdf))
  * Working with Vector Data
   * Spatial Queries: Measurement
   * Spatial Queries: Relationship
