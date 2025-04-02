@@ -268,6 +268,15 @@ Now that we know how it's working, let's try it out by looking at the impact of 
 
 ```{r}
 data(california_prop99)
+colnames(california_prop99) <- "column"
+california_prop99 <-
+  separate_wider_delim(california_prop99, 
+                       col = column,
+                       delim = ",",
+                       names = c("State",	"Year",	"PacksPerCapita",	"treated"))
+
+
+california_prop99 <- read_csv("data/california_prop99.csv")
 ```
 
 
@@ -590,10 +599,10 @@ Recall the setup:
 ---
 # PPSCM Application
 
-One advantage to PPSCM is less data prep - we can jump directly to estimation with `augsynth()`
+One advantage to PPSCM is less data prep - we can jump directly to estimation with `multisynth()`
 
 .center[
-`augsynth(y ~ treat | weighting covars | approx match covars | exact match covars,
+`multisynth(y ~ treat | weighting covars | approx match covars | exact match covars,
           unit,
           time,
           data,
