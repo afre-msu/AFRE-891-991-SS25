@@ -1,0 +1,6 @@
+PRISM_DATASET_FILENAME: cai_tmax_us_us_30s_20230404.bil
+PRISM_DATASET_CREATE_DATE: 20231017
+PRISM_DATASET_TYPE: an91/r2112
+PRISM_DATASET_VERSION: D2
+PRISM_CODE_VERSION: 16.1-20220830-1154
+PRISM_DATASET_REMARKS: This grid was initially modeled with PRISM at 30-arc-second (~800-m) resolution to produce the source grid listed under PRISM_DATASET_FILENAME, on the date(s) listed under PRISM_DATASET_CREATE_DATE. This source grid was then upscaled to 2.5-arc-minute (~4-km) resolution with a Gaussian filter.
