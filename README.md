@@ -171,15 +171,21 @@ Part 4 (Time Permitting): Spatial Regression
  * Choosing the Right Model
 
  [**Lecture 11: Machine Learning**](https://github.com/afre-msu/AFRE-891-991-SS25/tree/eb6690e9218d5a819f00ed2d1afd2eb9e229a275/Lecture%20Slides/11-ML)
- ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/eb6690e9218d5a819f00ed2d1afd2eb9e229a275/Lecture%20Slides/11-ML/ML-Intro.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/eb6690e9218d5a819f00ed2d1afd2eb9e229a275/Lecture%20Slides/11-ML/ML-Intro.pdf))
- 
+
+ Part 1: A Primer on Machine Learning ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/eb6690e9218d5a819f00ed2d1afd2eb9e229a275/Lecture%20Slides/11-ML/ML-Intro.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/eb6690e9218d5a819f00ed2d1afd2eb9e229a275/Lecture%20Slides/11-ML/ML-Intro.pdf))
  * Intro to Machine Learning
  * Resampling
+
+  Part 2: Classification and Selection Methods ([html]()) ([pdf]())
  * Machine Learning for Classification
  * Model Selection and Regularization
+
+ * Part 3: Trees ([html]()) ([pdf]())
  * Trees and Forests
  * Machine Learning for Causal Treatment Effect Estimation
- * Deep Learning (time permitting)
+
+ * Part 4 (time permitting): Deep Learning  ([html]()) ([pdf]())
+ * Deep Learning 
 
 
  [**Lecture 12: Big Data Tools (Time Permitting)**]()
