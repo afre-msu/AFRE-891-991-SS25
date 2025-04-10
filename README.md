@@ -158,7 +158,7 @@ Part 3 ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/2f36f4f8ae6e56
   * Geometric Operations
   * Spatial Joins
 
-Part 3: Raster  Data ([html]()) ([pdf]())
+Part 3: Raster  Data ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/3a5f84ff7a27bab2453d5d166c8d0f70c8ccb494/Lecture%20Slides/10-Spatial/Spatial-Raster.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/3a5f84ff7a27bab2453d5d166c8d0f70c8ccb494/Lecture%20Slides/10-Spatial/Spatial-Raster.pdf))
  * Intro to Raster Data
  * Common Raster Data
  * Raster Operations
