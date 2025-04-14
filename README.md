@@ -176,7 +176,7 @@ Part 4 (Time Permitting): Spatial Regression
  * Intro to Machine Learning
  * Resampling
 
-  Part 2: Classification and Selection Methods ([html]()) ([pdf]())
+  Part 2: Classification and Selection Methods ([html](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b8f13e1c1201c9f5e65754d681c9bb587971d56d/Lecture%20Slides/11-ML/ML-Class-Sel.html)) ([pdf](https://github.com/afre-msu/AFRE-891-991-SS25/blob/b8f13e1c1201c9f5e65754d681c9bb587971d56d/Lecture%20Slides/11-ML/ML-Class-Sel.pdf))
  * Machine Learning for Classification
  * Model Selection and Regularization
 
