@@ -1,0 +1,280 @@
+---
+title: "891/991 Final Presentations"
+author: "James Sears <br> AFRE 891/991 SS 25 <br> Michigan State University"
+
+
+      
+output:
+  xaringan::moon_reader:
+    css: [msu-default.css, msu-metropolis.css, metropolis-fonts]
+    lib_dir: libs
+    self_contained: true
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      fig_caption: true
+
+header-includes:
+  -\usepackage{amsmath}
+---
+
+```{css, echo=FALSE}
+# CSS for including pauses in printed PDF output (see bottom of lecture)
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+.remark-code-line {
+  font-size: 95%;
+}
+.small {
+  font-size: 75%;
+}
+.scroll-output-full {
+  height: 90%;
+  overflow-y: scroll;
+}
+.scroll-output-75 {
+  height: 75%;
+  overflow-y: scroll;
+}
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(knitr)
+library(kableExtra)
+library(fontawesome)
+library(tidyverse)
+knitr::opts_chunk$set(
+	fig.align = "center",
+	cache = FALSE,
+	dpi = 300,
+  warning = F,
+  message = F,
+	fig.height = 5,
+	out.width = "80%"
+)
+```
+
+# Table of Contents
+
+1. [Final Presentation Structure](#structure)
+1. [Final Presentation Schedule](#sched)
+1. [Discussant Assignments](#discuss)
+
+
+---
+class: inverse, middle
+name: structure
+
+# Final Presentation Structure
+
+---
+# Final Presentation Structure
+
+The final presentation is an .hi-purple[8 to 10 minute long, conference-style presentation]
+
+* This is a .hi-medgrn[difficult length], as it is not enough time to convey everything
+* Instead, focus on the .hi-pink[main story, overview of your approach, and the key results]
+
+---
+# Structure: Replication/Extension
+
+.hi-medgrn[What to Include:]
+
+  * Motivation
+  * Statement of Replicated Paper
+    * 991: statement of extensions
+  * Overview of their Replication Package
+  * Steps taken to replicate
+    * Any translation from other languages
+    * Comment on ease of replicability or if you ran into any issues/errors
+  * 991: Discussion of extension results, implication for paper
+  * Conclusion
+
+---
+# Structure: Acquisition
+
+.hi-medgrn[What to Include:]
+
+  * Motivation
+  * Statement of Data Source
+  * Overview of Necessary Approach
+    * API: description of endpoints
+    * Static/Dynamic: outline of workflow
+  * Discussion of any challenges encountered
+  * Summary of compiled dataset
+  * Conclusion
+
+---
+# Structure: Analysis
+
+.hi-medgrn[What to Include:]
+
+  * Motivation
+  * Research Question(s)
+  * Summary of Data Sources
+  * Empirical Strategy
+  * Results
+  * Conclusion/Next Steps
+
+---
+# Keep it Short
+
+My recommendation: one slide per minute!
+
+  * One slide each for motivation/conclusion/research statement
+  * .hi-blue[Acquisition:] more than one for the workflow
+  * .hi-medgrn[Analysis:] more than one for empirical strategy/results
+  * .hi-purple[Replication/Extension:] more than one for steps taken/results
+  
+  
+---
+class: inverse, middle
+name: sched
+
+# Final Presentation Schedule
+
+---
+# Final Presentation Schedule
+
+.pull-left[
+.hi-medgrn.center[AFRE 991]
+
+* Wednesday April 30
+* 10am-12pm
+* Our Scheduled Exam Time
+* Ag Hall 75
+]
+--
+.pull-left[
+.hi-medgrn.center[AFRE 891: 2 Parts]
+
+.pull-left[
+.hi-purple.center[Group 1]
+* Wednesday April 30
+* 12:15pm-1:00pm
+* Ag Hall 75
+]
+
+.pull-right[
+.hi-purple.center[Group 2]
+* Thursday May 1
+* 10-10:30am
+* Ag Hall 75
+]
+
+]
+
+---
+# 991 Presentation Schedule
+
+.hi-medgrn.center[Wed April 30, Ag Hall 75]
+
+```{r, echo = F}
+set.seed(12345)
+sched_991 <- data.frame(Presenter = c("Leslie Alex Joy",
+"Dabit Bista",
+"Mingda Li",
+"Yixuan Li",
+"Zhouxin Li",
+"Lun Luo",
+"Ashish Pokharel",
+"Yuxin Shen"),
+  Order = runif(n = 8)) %>%
+  arrange(desc(Order)) %>%
+  mutate(Order = row_number()) %>%
+  mutate(Discussant = case_when(
+    Order %in% seq(1,7,2) ~ lead(Presenter),
+    Order %in% seq(2,8,2) ~ lag(Presenter))) %>%
+  mutate(Time = c("10:00-10:12", "10:15-10:27", "10:30-10:42", "10:45-10:57",
+                  "11:00-11:12", "11:15-11:27", "11:30-11:42", "11:45-11:57"
+                  )) %>%    
+  select(Order, Time, Presenter, Discussant) 
+
+
+
+kable(sched_991, escape = F) %>% kable_styling(full_width = FALSE, bootstrap_options = c("striped", "bordered"))
+
+```
+
+---
+# 891 Presentation Schedule
+
+
+.pull-left[
+.hi-medgrn.center[Group 1: Wed April 30, Ag Hall 75]
+
+```{r, echo = F}
+sched_891_1 <- data.frame(Presenter = c("Caitlin Nelson",
+"Michael Hall",
+"Sam Rickman"),
+  Order = runif(n = 3)) %>%
+  arrange(desc(Order)) %>%
+  mutate(Order = row_number()) %>%
+  mutate(Discussant = case_when(
+    Order %in%(1:2) ~ lead(Presenter),
+    TRUE ~ lag(Presenter,2))) %>%
+  mutate(Time = c("12:15-12:27", "12:30-12:42", "12:45-12:57")) %>%    
+  select(Order, Time, Presenter, Discussant) 
+
+
+
+kable(sched_891_1, escape = F) %>% kable_styling(full_width = FALSE, bootstrap_options = c("striped", "bordered"))
+
+```
+
+]
+
+.pull-right[
+.hi-blue.center[Group 2: Thur May 1, Ag Hall 75]
+
+```{r, echo = F}
+sched_891_2 <- data.frame(Presenter = c("Kelly Hudson",
+"Ye Rim Lee"),
+  Order = runif(n = 2)) %>%
+  arrange(desc(Order)) %>%
+  mutate(Order = row_number()) %>%
+  mutate(Discussant = case_when(
+    Order == 1 ~ lead(Presenter),
+    TRUE ~ lag(Presenter))) %>%
+  mutate(Time = c("10:00-10:12", "10:15-10:27")) %>%    
+  select(Order, Time, Presenter, Discussant) 
+
+
+
+kable(sched_891_2, escape = F) %>% kable_styling(full_width = FALSE, bootstrap_options = c("striped", "bordered"))
+
+```
+
+]
+
+---
+# Scheduled Times
+
+I put presenters + discussants in .hi-medgrn[back-to-back half hour windows].
+
+
+If you have a conflict with the above scheduled time such that you .hi-medgrn[absolutely can't make that half hour window], then .hi-blue[find another pair to switch with] and then .hi-blue[confirm the switch with me].
+
+
+---
+# Replication Packages
+
+Remember that replication packages must be submitted to .hi-medgrn[myself and your discussant] by .hi-slate[end of day Sunday, April 20].
+
+  * Late submissions on replication packages will .hi-slate[not receive points] (7% of final grade)
+  
+You can either
+  1. Create a GitHub Repository and share it that way, or
+  2. Email a (link to a) zip folder containing all replication materials
+
+
+```{r gen_pdf, include = FALSE, cache = FALSE, eval = FALSE}
+infile = list.files(pattern = '991.html')
+pagedown::chrome_print(input = infile, timeout = 200)
+```
