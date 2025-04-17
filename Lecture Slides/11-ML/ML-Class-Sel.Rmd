@@ -423,7 +423,7 @@ train_df <- slice_sample(default_df, n = nrow(default_df)/2)
 ```
 
 ---
-# K Nearest Neighbors
+# K-Nearest Neighbors
 
 Running KNN for an initial choice of K = 5, using balance and income as predictors, with half of the data used for testing
 
@@ -439,7 +439,7 @@ knn_5 <- knn.reg(
 ```
 
 ---
-# K Nearest Neighbors
+# K-Nearest Neighbors
 
 How many defaults did we correctly predict?
 
@@ -488,7 +488,7 @@ The choice of K is very important—ranging from super flexible to inflexible.
 
 Function to Estimate KNN for given choice of K:
 
-.font90[
+.font80[
 ```{r}
 est_bayes <- function(k_choice,df){
   knn <- knn.reg(
@@ -880,13 +880,45 @@ include_graphics("images/isl-knn-error.png")
 ```
 .smaller.it[Source: ISL]
 
+---
+# Choice of K
 
+Historically, the go-to use of $k=10$ was fairly arbitrary. But what's the *right* $k$? Does the choice of $k$ even matter?
+--
 
+.pull-left[
+.center.hi-slate[High K:] 
+  * Model is trained on a .hi-medgrn[larger training set]
+  * Tested on a .hi-red[smaller test set]
+    * $\Rightarrow$ lower prediction error (in theory)
+    * Computationally more intensive
+]
+--
 
+.pull-right[
+.center.hi-slate[Low K:] 
+  * Model is trained on a .hi-red[smaller training set]
+  * Tested on a .hi-medgrn[larger test set]
+    * Theoretically higher prediction error, less computationally intensive
+]
 
+---
+# Choice of K
 
+.hi-slate[Solution: Multiple-k Repeated Cross-Validation]
 
+  * Choose a variety of candidate $k$
+    * Divisors of sample size are easiest
+  * Repeat the CV for a given $k$ multiple times
+    * i.e. repeat 10-fold CV 100 times, 5-fold CV 200 times
+  * Look at median of observed error, choose best-performing $k$
+    * Median to account for dependence across repeated CVs, underestimation of SE
+--
 
+What is the right range of $k$ to consider?
+* "too large" $k$ imposes a finite number of sample combinations, limits how many iterations can be meaningfully different
+      * LOOCV: $\left(\frac{n}{1} \right) = n = k$, and iteration makes no sense
+* With large sample sizes, $\left(\frac{n}{k} \right) = \mathbf{BIG}$, *tons* of distinct samples and $k$ matters less
 
 
 ---
